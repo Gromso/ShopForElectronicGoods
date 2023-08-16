@@ -20,6 +20,14 @@ public class RegistrationDTO {
         this.phone_number = phone_number;
         this.postal_address = postal_address;
     }
+    public RegistrationDTO(String password, String forename, String surname, String phone_number, String postal_address) {
+        super();
+        this.password = password;
+        this.forename = forename;
+        this.surname = surname;
+        this.phone_number = phone_number;
+        this.postal_address = postal_address;
+    }
 
     public String getEmail() {
         return email;
