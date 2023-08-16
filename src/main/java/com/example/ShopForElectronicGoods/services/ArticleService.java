@@ -1,5 +1,6 @@
 package com.example.ShopForElectronicGoods.services;
 
+import com.example.ShopForElectronicGoods.Exception.ApiRequestException;
 import com.example.ShopForElectronicGoods.models.Article;
 import com.example.ShopForElectronicGoods.models.ENUMS.ArticleStatusEnum;
 import com.example.ShopForElectronicGoods.repository.ArticleRepository;
@@ -26,8 +27,13 @@ public class ArticleService {
         articleRepository.deleteById(articleId);
     }
 
-    public Article addArticle(Article article){
-        return  articleRepository.save(article);
+    public Article addArticle(Article article) throws ApiRequestException {
+        Article articleArticle = articleRepository.save(article);
+        if(articleArticle == null){
+            throw new ApiRequestException("something went wrong");
+        }else {
+            return articleArticle;
+        }
     }
 
     public Article editArticleOrSave(Article article, Integer articleId){

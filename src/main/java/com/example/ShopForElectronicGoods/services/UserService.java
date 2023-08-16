@@ -7,12 +7,14 @@ import com.example.ShopForElectronicGoods.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -26,16 +28,20 @@ public class UserService implements UserDetailsService {
     private UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return userRepository.findByEmail(email).orElseThrow(() -> new ApiRequestException("User with " + email + " not found"));
+    public UserDetails loadUserByUsername(String email) throws ApiRequestException {
+        return userRepository.findByEmail(email).orElseThrow();
     }
 
+    public List<ApplicationUser> getAllUser() throws ApiRequestException{
+        return userRepository.findAll();
+    }
     public ApplicationUser findUserById(Integer id){
             return userRepository.findById(id).orElseThrow(()-> new ApiRequestException("user with id" + id + " not found"));
     }
+
     public void deleteUserById(Integer id){
         userRepository.deleteById(id);
-        throw  new ApiRequestException("User with " + id + " not found");
+        throw new ApiRequestException("User with " + id + " id not found");
     }
 
     public ApplicationUser editUserById(RegistrationDTO data, Integer id) {

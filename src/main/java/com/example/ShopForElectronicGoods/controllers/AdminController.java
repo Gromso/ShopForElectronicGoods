@@ -2,10 +2,17 @@ package com.example.ShopForElectronicGoods.controllers;
 
 
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.ShopForElectronicGoods.Exception.ApiRequestException;
+import com.example.ShopForElectronicGoods.models.ApplicationUser;
+import com.example.ShopForElectronicGoods.services.UserService;
+import jakarta.websocket.server.PathParam;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.support.AbstractPlatformTransactionManager;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin")
@@ -13,8 +20,31 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminController {
 
 
-    @GetMapping("/")
-    public String helloAdmin(){
-        return "Hello Admin";
+    @Autowired
+    private UserService userService;
+
+    @GetMapping("/all")
+    public ResponseEntity<List<ApplicationUser>> getAllUser(){
+        try{
+            List<ApplicationUser> user = userService.getAllUser();
+            return ResponseEntity.ok(user);
+        }catch (ApiRequestException e){
+            throw new ApiRequestException("Users not found");
+        }
+    }
+
+    @GetMapping("/user/{email}")
+    public ResponseEntity<UserDetails> getUserByEmail(@PathVariable String email){
+        try{
+            UserDetails user = userService.loadUserByUsername(email);
+            return ResponseEntity.ok(user);
+        }catch (ApiRequestException e){
+            throw new ApiRequestException("email not valid");
+        }
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public void deleteUserById(@PathVariable Integer id){
+        userService.deleteUserById(id);
     }
 }

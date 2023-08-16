@@ -116,6 +116,10 @@ public class ApplicationUser implements UserDetails {
         return this.email;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }

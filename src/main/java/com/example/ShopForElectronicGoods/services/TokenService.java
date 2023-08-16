@@ -27,7 +27,6 @@ public class TokenService {
 
         Instant now = Instant.now();
         //Instant e = Instant.ofEpochSecond(1000*60);
-
         String scope = auth.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(" "));

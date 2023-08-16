@@ -1,5 +1,6 @@
 package com.example.ShopForElectronicGoods.services;
 
+import com.example.ShopForElectronicGoods.Exception.ApiRequestException;
 import com.example.ShopForElectronicGoods.models.ApplicationUser;
 import com.example.ShopForElectronicGoods.models.Role;
 import com.example.ShopForElectronicGoods.modelsDTO.LoginResponseDTO;
@@ -37,7 +38,7 @@ public class AuthenticationService {
     public ApplicationUser registerUser(String email, String password, String forename,String surname, String phone_number, String postal_address ){
         String encodePassword = passwordEncoder.encode(password);
         Role userRole = roleRepository.findByAuthority("USER").orElse(null);
-        System.out.println(userRole);
+
         Set<Role> authority= new HashSet<>();
         authority.add(userRole);
 
@@ -45,7 +46,7 @@ public class AuthenticationService {
 
     }
 
-    public LoginResponseDTO login(String email, String password){
+   /* public LoginResponseDTO login(String email, String password){
         try{
             Authentication auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(email,password)
@@ -55,5 +56,23 @@ public class AuthenticationService {
         }catch(Exception e){
            return new LoginResponseDTO(null, "");
         }
-    }
+    }*/
+   public LoginResponseDTO login(String email, String password) throws ApiRequestException  {
+       try {
+           Authentication auth = authenticationManager.authenticate(
+                   new UsernamePasswordAuthenticationToken(email, password)
+           );
+           String token = tokenService.generateJwt(auth);
+           // Pronalaženje korisnika samo jednom prilikom autentifikacije
+           if(auth != null){
+               ApplicationUser user = (ApplicationUser) auth.getPrincipal();
+               return new LoginResponseDTO(user, token);
+           }else {
+               throw new ApiRequestException("ee");
+           }
+
+       } catch (ApiRequestException e) {
+           return new LoginResponseDTO(null, "");
+       }
+   }
 }
