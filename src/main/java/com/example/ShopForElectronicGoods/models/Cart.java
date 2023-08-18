@@ -1,4 +1,5 @@
 package com.example.ShopForElectronicGoods.models;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,8 +20,9 @@ public class Cart {
     @Column(name = "cart_id", nullable = false)
     private Integer cart_id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
     private ApplicationUser user;
 
     @OneToMany(mappedBy = "cart")

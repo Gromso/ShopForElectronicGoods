@@ -2,6 +2,7 @@ package com.example.ShopForElectronicGoods.services;
 
 import com.example.ShopForElectronicGoods.Exception.ApiRequestException;
 import com.example.ShopForElectronicGoods.models.Article;
+import com.example.ShopForElectronicGoods.models.Category;
 import com.example.ShopForElectronicGoods.models.ENUMS.ArticleStatusEnum;
 import com.example.ShopForElectronicGoods.repository.ArticleRepository;
 import com.example.ShopForElectronicGoods.repository.CategoryRepository;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
+import java.util.Set;
 
 @Service
 public class ArticleService {
@@ -25,15 +27,15 @@ public class ArticleService {
 
     public void deleteArticleById(Integer articleId){
         articleRepository.deleteById(articleId);
+        throw new ApiRequestException("message", 1001);
     }
 
-    public Article addArticle(Article article) throws ApiRequestException {
-        Article articleArticle = articleRepository.save(article);
-        if(articleArticle == null){
-            throw new ApiRequestException("something went wrong");
-        }else {
-            return articleArticle;
-        }
+    public Article addArticle(Article article, Integer categoryId) {
+        Article article1 = categoryRepository.findById(categoryId).map(category ->{
+            article.setCategory(category);
+            return articleRepository.save(article);
+        }).orElseThrow(() -> new ApiRequestException("save failed"));
+        return  articleRepository.save(article1);
     }
 
     public Article editArticleOrSave(Article article, Integer articleId){
@@ -63,5 +65,10 @@ public class ArticleService {
             articleById.setIs_promoted(article.getIs_promoted());
         }
         return articleRepository.save(articleById);
+    }
+
+
+    public Set<Article> getAllArticlesByCategory(Category category) {
+        return articleRepository.findByCategory(category);
     }
 }

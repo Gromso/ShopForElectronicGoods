@@ -1,12 +1,15 @@
 package com.example.ShopForElectronicGoods.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -29,14 +32,19 @@ public class Category {
     private String image_path;
 
     @OneToMany(mappedBy = "category")
-    private Set<Article> articles ;
+    private List<Article> articles  = new ArrayList<>();
 
     @OneToMany(mappedBy = "category")
     private Set<Feature> features;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_category_id")
-    private Category parent_category_id;
+    @JsonIgnore
+    private Category parent_category;
+
+
+    @OneToMany(mappedBy = "parent_category")
+    private Set<Category> categories;
 
 
 }

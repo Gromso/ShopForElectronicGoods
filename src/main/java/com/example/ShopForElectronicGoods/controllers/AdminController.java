@@ -7,6 +7,7 @@ import com.example.ShopForElectronicGoods.models.ApplicationUser;
 import com.example.ShopForElectronicGoods.services.UserService;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.support.AbstractPlatformTransactionManager;
@@ -24,13 +25,9 @@ public class AdminController {
     private UserService userService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<ApplicationUser>> getAllUser(){
-        try{
+    public ResponseEntity<List<ApplicationUser>> getAllUser() throws ApiRequestException{
             List<ApplicationUser> user = userService.getAllUser();
             return ResponseEntity.ok(user);
-        }catch (ApiRequestException e){
-            throw new ApiRequestException("Users not found");
-        }
     }
 
     @GetMapping("/user/{email}")

@@ -8,6 +8,7 @@ import com.example.ShopForElectronicGoods.services.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,8 +31,8 @@ public class UserController {
         try{
             ApplicationUser user = userService.editUserById(data, id);
             return ResponseEntity.ok(user);
-        }catch (ApiRequestException e){
-            throw new ApiRequestException("User with id not found");
+        }catch (Exception e){
+          return   ResponseEntity.notFound().build();
         }
     }
 }

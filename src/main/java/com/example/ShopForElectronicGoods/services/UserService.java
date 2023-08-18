@@ -28,12 +28,14 @@ public class UserService implements UserDetailsService {
     private UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws ApiRequestException {
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepository.findByEmail(email).orElseThrow();
     }
 
-    public List<ApplicationUser> getAllUser() throws ApiRequestException{
-        return userRepository.findAll();
+    public List<ApplicationUser> getAllUser(){
+            return  userRepository.findAll();
+
+
     }
     public ApplicationUser findUserById(Integer id){
             return userRepository.findById(id).orElseThrow(()-> new ApiRequestException("user with id" + id + " not found"));
@@ -41,7 +43,7 @@ public class UserService implements UserDetailsService {
 
     public void deleteUserById(Integer id){
         userRepository.deleteById(id);
-        throw new ApiRequestException("User with " + id + " id not found");
+        throw new ApiRequestException("User with " + id + " id not found", HttpStatus.UPGRADE_REQUIRED, 1000);
     }
 
     public ApplicationUser editUserById(RegistrationDTO data, Integer id) {

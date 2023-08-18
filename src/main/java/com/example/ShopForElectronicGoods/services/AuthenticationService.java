@@ -7,6 +7,7 @@ import com.example.ShopForElectronicGoods.modelsDTO.LoginResponseDTO;
 import com.example.ShopForElectronicGoods.repository.RoleRepository;
 import com.example.ShopForElectronicGoods.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -57,7 +58,7 @@ public class AuthenticationService {
            return new LoginResponseDTO(null, "");
         }
     }*/
-   public LoginResponseDTO login(String email, String password) throws ApiRequestException  {
+   public LoginResponseDTO login(String email, String password){
        try {
            Authentication auth = authenticationManager.authenticate(
                    new UsernamePasswordAuthenticationToken(email, password)
@@ -68,7 +69,7 @@ public class AuthenticationService {
                ApplicationUser user = (ApplicationUser) auth.getPrincipal();
                return new LoginResponseDTO(user, token);
            }else {
-               throw new ApiRequestException("ee");
+               throw new ApiRequestException("message");
            }
 
        } catch (ApiRequestException e) {

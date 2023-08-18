@@ -1,6 +1,7 @@
 package com.example.ShopForElectronicGoods.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -102,6 +103,7 @@ public class ApplicationUser implements UserDetails {
         this.authorities = authorities;
     }
 
+    @JsonIgnore
     @Override
     public String getPassword() {
         return this.password_hash;
