@@ -1,4 +1,7 @@
 package com.example.ShopForElectronicGoods.models;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,7 +21,9 @@ public class ArticlePrice {
     @Column(name ="article_price_id", nullable = false)
     private Integer article_price_id;
 
-    @ManyToOne
+
+    @JsonBackReference
+    @ManyToOne(targetEntity = Article.class)
     @JoinColumn(name = "article_id", nullable = false)
     private Article article;
 

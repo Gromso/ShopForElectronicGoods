@@ -72,7 +72,7 @@ public class CategoryController {
     }
 
     @GetMapping("/all/{categoryId}/article")
-    public ResponseEntity<List<Article>> addArticleToCart(@PathVariable  Integer categoryId){
+    public ResponseEntity<List<Article>> findArticleToCategory(@PathVariable  Integer categoryId){
         if(!categoryRepository.existsById(categoryId)){
             throw  new ApiRequestException("nesto nije kako treba",HttpStatus.BAD_REQUEST);
         }

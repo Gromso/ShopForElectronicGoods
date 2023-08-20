@@ -1,7 +1,6 @@
 package com.example.ShopForElectronicGoods.models;
 
 import jakarta.persistence.*;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.security.core.GrantedAuthority;
 
 @Entity

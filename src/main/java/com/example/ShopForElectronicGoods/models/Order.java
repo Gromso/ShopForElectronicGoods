@@ -1,5 +1,6 @@
 package com.example.ShopForElectronicGoods.models;
 import com.example.ShopForElectronicGoods.models.ENUMS.OrderStatusEnum;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,8 +25,9 @@ public class Order {
     @Temporal(TemporalType.TIMESTAMP)
     private Date created_at_order;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id", nullable = false)
+    @JsonIgnore
     private Cart cart;
 
     @Enumerated(EnumType.STRING)

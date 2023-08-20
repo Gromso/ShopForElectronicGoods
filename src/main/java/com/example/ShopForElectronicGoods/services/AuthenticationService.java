@@ -7,6 +7,7 @@ import com.example.ShopForElectronicGoods.modelsDTO.LoginResponseDTO;
 import com.example.ShopForElectronicGoods.repository.RoleRepository;
 import com.example.ShopForElectronicGoods.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -47,18 +48,20 @@ public class AuthenticationService {
 
     }
 
-   /* public LoginResponseDTO login(String email, String password){
+    public LoginResponseDTO login(String email, String password){
         try{
             Authentication auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(email,password)
             );
             String token = tokenService.generateJwt(auth);
+
+           // String refreshToken = tokenService.generateRefreshJwt(auth);
             return new LoginResponseDTO(userRepository.findByEmail(email).orElse(null), token);
         }catch(Exception e){
            return new LoginResponseDTO(null, "");
         }
-    }*/
-   public LoginResponseDTO login(String email, String password){
+    }
+   /*public LoginResponseDTO login(String email, String password){
        try {
            Authentication auth = authenticationManager.authenticate(
                    new UsernamePasswordAuthenticationToken(email, password)
@@ -74,6 +77,5 @@ public class AuthenticationService {
 
        } catch (ApiRequestException e) {
            return new LoginResponseDTO(null, "");
-       }
-   }
+       }}*/
 }

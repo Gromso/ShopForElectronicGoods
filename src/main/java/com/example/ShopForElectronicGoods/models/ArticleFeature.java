@@ -1,6 +1,8 @@
 package com.example.ShopForElectronicGoods.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,11 +20,11 @@ public class ArticleFeature {
     @Column(name = "article_feature_id", nullable = false)
     private Integer article_feature_id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id", nullable = false)
     private Article article;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "feature_id", nullable = false)
     private Feature feature;
 

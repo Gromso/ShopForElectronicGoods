@@ -1,16 +1,18 @@
-package com.example.ShopForElectronicGoods.services;
+package com.example.ShopForElectronicGoods.services.ArticleServices;
 
 import com.example.ShopForElectronicGoods.Exception.ApiRequestException;
-import com.example.ShopForElectronicGoods.models.Article;
-import com.example.ShopForElectronicGoods.models.Category;
+import com.example.ShopForElectronicGoods.models.*;
 import com.example.ShopForElectronicGoods.models.ENUMS.ArticleStatusEnum;
-import com.example.ShopForElectronicGoods.repository.ArticleRepository;
-import com.example.ShopForElectronicGoods.repository.CategoryRepository;
+import com.example.ShopForElectronicGoods.modelsDTO.ArticleDTO.ArticleAddDTO;
+import com.example.ShopForElectronicGoods.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import com.example.ShopForElectronicGoods.modelsDTO.ArticleDTO.Features;
 
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
+
 
 @Service
 public class ArticleService {
@@ -21,6 +23,15 @@ public class ArticleService {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    private ArticleFeatureRepository articleFeatureRepository;
+
+    @Autowired
+    private FeatureRepository featureRepository;
+
+    @Autowired
+    private ArticlePriceRepository articlePriceRepository;
+
     public Article findArticleById(Integer articleId){
         return articleRepository.findById(articleId).orElse(null);
     }
@@ -29,6 +40,37 @@ public class ArticleService {
         articleRepository.deleteById(articleId);
         throw new ApiRequestException("message", 1001);
     }
+
+    public Article addArticleDTO(ArticleAddDTO articleDto){
+        Article article = new Article();
+        article.setName(articleDto.getName());
+        Category category = categoryRepository.findById(articleDto.getCategoryId()).orElseThrow(() -> new ApiRequestException("category with id" + articleDto.getCategoryId() + " not found"));
+        article.setCategory(category);
+        article.setExcerpt(articleDto.getExcerpt());
+        article.setDescription(articleDto.getDescription());
+        Article saveArticled = articleRepository.save(article);
+
+        ArticlePrice ap = new ArticlePrice();
+
+        ap.setArticle(saveArticled);
+        ap.setPrice(articleDto.getPrice());
+
+        articlePriceRepository.save(ap);
+
+        for(Features f : articleDto.getFeatures()){
+            Feature Feature = featureRepository.findById(f.getFeature_id()).orElseThrow(() -> new ApiRequestException(""));
+            ArticleFeature afeature = new ArticleFeature();
+            afeature.setArticle(saveArticled);
+            afeature.setFeature(Feature);
+            afeature.setValue(f.getValue());
+
+            articleFeatureRepository.save(afeature);
+        }
+
+       return saveArticled;
+
+    }
+
 
     public Article addArticle(Article article, Integer categoryId) {
         Article article1 = categoryRepository.findById(categoryId).map(category ->{
@@ -68,7 +110,12 @@ public class ArticleService {
     }
 
 
-    public Set<Article> getAllArticlesByCategory(Category category) {
-        return articleRepository.findByCategory(category);
+    public List<Feature> findArticleFeatureByArticle(Integer articleId){
+        if (!articleRepository.existsById(articleId)){
+            throw new ApiRequestException("User with id "+ articleId + " not found", HttpStatus.NOT_FOUND);
+        }
+        List<Feature> articleFeatures = articleFeatureRepository.findArticleFeatureByArticleId(articleId);
+        return articleFeatures;
     }
+
 }

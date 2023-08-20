@@ -3,6 +3,7 @@ package com.example.ShopForElectronicGoods.controllers;
 
 import com.example.ShopForElectronicGoods.Exception.ApiRequestException;
 import com.example.ShopForElectronicGoods.models.ApplicationUser;
+import com.example.ShopForElectronicGoods.models.Cart;
 import com.example.ShopForElectronicGoods.modelsDTO.RegistrationDTO;
 import com.example.ShopForElectronicGoods.services.UserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -11,6 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -34,5 +37,11 @@ public class UserController {
         }catch (Exception e){
           return   ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/all/{userId}/user")
+    public ResponseEntity<List<Cart>> findCartByUserId(@PathVariable final Integer userId){
+        List<Cart> carts = userService.findCartByUser(userId);
+        return new ResponseEntity<>(carts, HttpStatus.FOUND);
     }
 }

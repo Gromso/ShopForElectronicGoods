@@ -1,4 +1,5 @@
 package com.example.ShopForElectronicGoods.models;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,7 +16,7 @@ public class Photo {
     @Column(name = "photo_id", nullable = false)
     private Integer photo_id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "article_id", nullable = false)
     private Article article;
 

@@ -1,4 +1,6 @@
 package com.example.ShopForElectronicGoods.models;
+import com.example.ShopForElectronicGoods.modelsDTO.CartArticleDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,15 +17,24 @@ public class CartArticle {
     @Column(name = "cart_article_id", nullable = false)
     private Integer cart_article_id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cart_id", nullable = false)
     private Cart cart;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id", nullable = false)
     private Article article;
 
     @Column(name = "quantity", nullable = false)
     private int quantity;
+
+    public static CartArticle from (CartArticleDTO cartArticleDTO){
+        CartArticle cartArticle = new CartArticle();
+        cartArticle.setCart_article_id(cartArticleDTO.getCart_article_id());
+        cartArticle.setCart(cartArticleDTO.getCart());
+        cartArticle.setArticle(cartArticleDTO.getArticle());
+        cartArticle.setQuantity(cartArticleDTO.getQuantity());
+        return cartArticle;
+    }
 
 }

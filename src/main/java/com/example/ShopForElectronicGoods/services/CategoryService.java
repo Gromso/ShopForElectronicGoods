@@ -1,13 +1,11 @@
 package com.example.ShopForElectronicGoods.services;
 
 import com.example.ShopForElectronicGoods.Exception.ApiRequestException;
-import com.example.ShopForElectronicGoods.models.Article;
 import com.example.ShopForElectronicGoods.models.Category;
 import com.example.ShopForElectronicGoods.repository.CategoryRepository;
-import jakarta.persistence.EntityNotFoundException;
+import com.example.ShopForElectronicGoods.services.ArticleServices.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -45,10 +43,6 @@ public class CategoryService {
        return categoryRepository.save(category);
     }
 
-   public Set<Article> getAllArticlesForCategory(Integer categoryId) {
-       Category category = getCategoryById(categoryId);
-       return articleService.getAllArticlesByCategory(category);
-   }
 
     public Category editCategoryById(Category category, Integer categoryId){
         Category categoryById = getCategoryById(categoryId);

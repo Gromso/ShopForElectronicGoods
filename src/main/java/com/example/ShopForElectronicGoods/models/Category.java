@@ -32,7 +32,7 @@ public class Category {
     private String image_path;
 
     @OneToMany(mappedBy = "category")
-    private List<Article> articles  = new ArrayList<>();
+    private Set<Article> articles;
 
     @OneToMany(mappedBy = "category")
     private Set<Feature> features;
@@ -41,7 +41,6 @@ public class Category {
     @JoinColumn(name = "parent_category_id")
     @JsonIgnore
     private Category parent_category;
-
 
     @OneToMany(mappedBy = "parent_category")
     private Set<Category> categories;

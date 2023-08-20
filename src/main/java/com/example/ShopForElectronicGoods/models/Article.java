@@ -2,6 +2,7 @@ package com.example.ShopForElectronicGoods.models;
 
 import com.example.ShopForElectronicGoods.models.ENUMS.ArticleStatusEnum;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.Set;
@@ -21,21 +22,17 @@ public class Article {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "category_id", nullable = false)
-    @JsonIgnore
-    private Category category;
-
     @OneToMany(mappedBy = "article")
     private Set<ArticleFeature> articleFeatureSet;
 
     @OneToMany(mappedBy = "article")
     private Set<Photo> photos;
 
-    @OneToMany(mappedBy = "article")
+    @JsonManagedReference
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
     private Set<ArticlePrice> articlePrice;
 
-    @OneToMany(mappedBy = "article")
+    @OneToMany(mappedBy = "article", targetEntity = CartArticle.class)
     private Set<CartArticle> cartArticle;
 
     @Column (name = "excerpt", nullable = false)
@@ -50,5 +47,9 @@ public class Article {
 
     @Column(name = "is_promoted", columnDefinition = "TINYINT")
     private byte is_promoted;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
 
 }

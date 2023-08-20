@@ -1,6 +1,8 @@
 package com.example.ShopForElectronicGoods.models;
+import com.example.ShopForElectronicGoods.modelsDTO.CartDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.Fetch;
 import lombok.*;
 
 import java.util.Date;
@@ -22,16 +24,23 @@ public class Cart {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnore
+    @JsonIgnore // ovo mora da bude @JsonIgnore inace izbacuje (Cannot call sendError() after the response has been committed)
     private ApplicationUser user;
 
     @OneToMany(mappedBy = "cart")
     private Set<CartArticle> cartArticle;
-
 
     @Basic(optional = false)
     @Column(name = "created_at", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false, nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date created_at_cart;
 
+    public static Cart from(CartDTO cartDTO){
+        Cart cart = new Cart();
+        cart.setCart_id(cart.getCart_id());
+        cart.setUser(cartDTO.getUser());
+        cart.setCartArticle(cartDTO.getCartArticle());
+        cart.setCreated_at_cart(cartDTO.getCreated_at_cart());
+        return cart;
+    }
 }

@@ -2,9 +2,13 @@ package com.example.ShopForElectronicGoods.services;
 
 import com.example.ShopForElectronicGoods.Exception.ApiRequestException;
 import com.example.ShopForElectronicGoods.models.ApplicationUser;
+import com.example.ShopForElectronicGoods.models.Cart;
 import com.example.ShopForElectronicGoods.modelsDTO.RegistrationDTO;
+import com.example.ShopForElectronicGoods.repository.CartRepository;
 import com.example.ShopForElectronicGoods.repository.UserRepository;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -26,6 +30,9 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CartRepository cartRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -70,5 +77,13 @@ public class UserService implements UserDetailsService {
 
             return userRepository.save(user);
         }
+    }
+
+    public List<Cart> findCartByUser(Integer userId){
+        if (!userRepository.existsById(userId)){
+            throw new ApiRequestException("User with id "+ userId + " not found", HttpStatus.NOT_FOUND);
+        }
+        List<Cart> carts = cartRepository.findCartByUserId(userId);
+        return carts;
     }
 }

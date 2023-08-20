@@ -39,11 +39,12 @@ public class ApplicationUser implements UserDetails {
     @Column(name = "postal_address", nullable = false)
     private String postal_address;
 
-    @OneToMany( mappedBy="user")
+    @OneToMany( mappedBy="user",fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<Cart> cart;
 
-
     @ManyToMany(fetch = FetchType.EAGER)
+    @JsonIgnore
     @JoinTable(
             name = "user_role",
             joinColumns = {@JoinColumn(name = "user_id")},
