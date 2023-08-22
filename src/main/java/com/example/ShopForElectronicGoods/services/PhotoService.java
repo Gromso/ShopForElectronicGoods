@@ -6,13 +6,19 @@ import com.example.ShopForElectronicGoods.models.Article;
 import com.example.ShopForElectronicGoods.models.Photo;
 import com.example.ShopForElectronicGoods.repository.ArticleRepository;
 import com.example.ShopForElectronicGoods.repository.PhotoRepository;
+import net.coobird.thumbnailator.Thumbnails;
 import org.apache.tika.Tika;
+import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,8 +33,6 @@ public class PhotoService {
     @Value("${upload.dir}")
     private String uploadDir;
 
-    @Value("${spring.servlet.multipart.max-file-size}")
-    private int maxFileSize;
 
     @Autowired
     private PhotoRepository photoRepository;
@@ -38,41 +42,38 @@ public class PhotoService {
 
 
 
-    public Photo savePhotoForArticle(MultipartFile file, Integer articleId) throws IOException {
-        if (file.isEmpty()) {
-            throw new ApiRequestException("File not found");
-        }
-        String mimeType = new Tika().detect(file.getInputStream());
-
-        // Dopustite samo određene MIME tipove (npr. image/jpeg i image/png)
-        if (!mimeType.equals("image/jpeg") && !mimeType.equals("image/png")) {
+   public Photo savePhotoForArticle(MultipartFile file, Integer articleId) throws IOException {
+       if (file.isEmpty()) {
+           throw new ApiRequestException("File not found");
+       }
+       String mimeType = new Tika().detect(file.getInputStream());
+       // Dopustite samo određene MIME tipove (npr. image/jpeg i image/png)
+       if (!mimeType.equals("image/jpeg") && !mimeType.equals("image/png")) {
            throw new ApiRequestException("Samo JPEG i PNG slike su dozvoljene.", HttpStatus.NOT_ACCEPTABLE);
-        }
-       /* if (file.getSize() > 1) {
-            throw new ApiRequestException("Only one file is allowed");
-        }*/
+       }
+       String originalFileName = Objects.requireNonNull(file.getOriginalFilename());
+       String image_Name = AddPhotoConfig.generateFileName(Objects.requireNonNull(originalFileName));
 
-        long fileSizeInBytes = file.getSize();
-        if(fileSizeInBytes > maxFileSize){
-            throw new ApiRequestException("Max size for file is 2Md");
-        }
+       Path originalFilePath = Paths.get(uploadDir+"normalImages/", image_Name);
+       Path thumbnailFilePath = Paths.get(uploadDir + "thumbnailsImages/", image_Name);
 
 
-        String image_path = AddPhotoConfig.generateFileName(Objects.requireNonNull(file.getOriginalFilename()));
+       try {
+           Files.write(originalFilePath, file.getBytes());
+           AddPhotoConfig.uploadThumbnail(originalFilePath, thumbnailFilePath);
 
-        Path filePath = Paths.get(uploadDir, image_path);
+       } catch (IOException e) {
+           throw new ApiRequestException("Greška pri spremanju slike", HttpStatus.INTERNAL_SERVER_ERROR);
+       }
 
-        Article article = articleRepository.findById(articleId)
-                .orElseThrow(() -> new ApiRequestException("Article with id " + articleId + " not found"));
+       Article article = articleRepository.findById(articleId)
+               .orElseThrow(() -> new ApiRequestException("Article with id " + articleId + " not found"));
 
-        Photo photo = new Photo();
-        photo.setArticle(article);
-        photo.setImage_path(image_path);
+       Photo photo = new Photo();
+       photo.setArticle(article);
+       photo.setImage_path(image_Name);
 
-        Files.write(filePath, file.getBytes());
-
-        return photoRepository.save(photo);
-    }
-
+       return photoRepository.save(photo);
+   }
 
 }

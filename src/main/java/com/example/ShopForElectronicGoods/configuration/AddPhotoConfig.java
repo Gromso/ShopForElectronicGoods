@@ -1,15 +1,17 @@
 package com.example.ShopForElectronicGoods.configuration;
 
-import com.example.ShopForElectronicGoods.Exception.ApiRequestException;
+import net.coobird.thumbnailator.Thumbnails;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 public class AddPhotoConfig {
 
-    private static final List<String> ALLOWED_EXTENSIONS = Arrays.asList("jpg", "jpeg", "png");
 
     private static int[] generateUniqueNumbers() {
         int[] nizBrojeva = new int[9];
@@ -28,19 +30,22 @@ public class AddPhotoConfig {
     }
 
     public static String generateFileName(String OriginalFileName) {
-        Pattern pattern = Pattern.compile("\\.(jpg|png|jpeg)$", Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(OriginalFileName);
-        if (!matcher.find()) {
-            throw new ApiRequestException("Invalid file extension");
-        }
-        String fileExtension = matcher.group(1).toLowerCase();
-        if (!ALLOWED_EXTENSIONS.contains(fileExtension)) {
-            throw new ApiRequestException("File extension not allowed");
-        }
-        String fileReplaceName = OriginalFileName.replaceAll("[^A-Za-z0-9./\\s-]", "");
+        String fileReplaceName= OriginalFileName.replaceAll("[^A-Za-z0-9./\\s-]", "");
         Instant now = Instant.now();
         int[] nizBrojeva = generateUniqueNumbers();
-        return now.getEpochSecond() + Arrays.toString(nizBrojeva) +  fileReplaceName;
+        return now.getEpochSecond() + Arrays.toString(nizBrojeva) +  fileReplaceName.toLowerCase();
+    }
+
+
+    public static void uploadThumbnail(Path originalFilePath, Path thumbnailFilePath) throws IOException {
+        BufferedImage originalImage = ImageIO.read(originalFilePath.toFile());
+        // Odaberite željenu širinu i visinu za thumbnail
+        int thumbnailWidth = 100; // Širina thumbnail slike
+        int thumbnailHeight = 100; // Visina thumbnail slike
+
+        Thumbnails.of(originalImage)
+                .size(thumbnailWidth, thumbnailHeight)
+                .toFile(thumbnailFilePath.toFile());
     }
 
 }
