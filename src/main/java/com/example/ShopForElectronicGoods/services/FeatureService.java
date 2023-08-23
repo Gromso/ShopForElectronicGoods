@@ -1,10 +1,15 @@
 package com.example.ShopForElectronicGoods.services;
 
+import com.example.ShopForElectronicGoods.Exception.ApiRequestException;
+import com.example.ShopForElectronicGoods.models.Category;
 import com.example.ShopForElectronicGoods.models.Feature;
+import com.example.ShopForElectronicGoods.repository.CategoryRepository;
 import com.example.ShopForElectronicGoods.repository.FeatureRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -13,12 +18,24 @@ public class FeatureService {
     @Autowired
     private FeatureRepository featureRepository;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
+
     public Feature getFeatureById(Integer featureId) {
         return featureRepository.findById(featureId).orElse(null);
     }
 
-    public Feature addFeature (Feature feature) {
-        return featureRepository.save(feature);
+    public List<Feature> getAllFeatures() {
+        return featureRepository.findAll();
+    }
+
+    public Feature addFeature (Feature feature, Integer categoryId) {
+        Feature features = categoryRepository.findById(categoryId).map(category -> {
+            feature.setCategory(category);
+            return featureRepository.save(feature);
+        }).orElseThrow(() -> new ApiRequestException("Feature not found", HttpStatus.NOT_FOUND));
+
+        return featureRepository.save(features);
     }
 
     public Feature editFeature (Feature feature, Integer featureId) {
@@ -26,9 +43,6 @@ public class FeatureService {
 
         if(Objects.nonNull(feature.getName()) && !"".equalsIgnoreCase(feature.getName())){
             featureById.setName(feature.getName());
-        }
-        if(Objects.nonNull(feature.getCategory())){
-            featureById.setCategory(feature.getCategory());
         }
 
         return featureRepository.save(featureById);

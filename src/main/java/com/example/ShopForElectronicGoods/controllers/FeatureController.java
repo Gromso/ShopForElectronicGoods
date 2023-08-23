@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/feature")
 public class FeatureController {
@@ -28,10 +30,17 @@ public class FeatureController {
         }
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<Feature> addFeature(@RequestBody Feature feature){
+    @GetMapping("/features")
+    public ResponseEntity<List<Feature>> getAllFeature(){
+        List<Feature> features =  featureService.getAllFeatures();
+        return ResponseEntity.ok(features);
+    }
+
+    @PostMapping("/add/{categoryId}")
+    public ResponseEntity<Feature> addFeature(@RequestBody Feature feature,
+                                              @PathVariable final Integer categoryId){
         try{
-            Feature f = featureService.addFeature(feature);
+            Feature f = featureService.addFeature(feature,categoryId);
             return  ResponseEntity.ok(f);
         }catch (EntityNotFoundException e){
             return ResponseEntity.notFound().build();
