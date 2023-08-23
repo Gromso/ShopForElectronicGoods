@@ -21,6 +21,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
@@ -78,6 +79,31 @@ public class PhotoService {
        photo.setImage_path(image_Name);
 
        return photoRepository.save(photo);
+   }
+
+
+
+   public void deletePhotoForArticle( final Integer photoId) throws IOException {
+
+       Photo photoId2 = photoRepository.findById(photoId).orElseThrow(() ->
+               new ApiRequestException("Photo by id " + photoId + " not found", HttpStatus.NOT_FOUND));
+
+       try {
+           Path originalFilePath = Paths.get("D:\\java_programs\\projekti\\storage\\photos" + "\\normalImages\\" + photoId2.getImage_path());
+           Path smallFilePath = Paths.get("D:\\java_programs\\projekti\\storage\\photos" + "\\small\\" + photoId2.getImage_path());
+           Path thumbnailFilePath = Paths.get("D:\\java_programs\\projekti\\storage\\photos" + "\\thumb\\" + photoId2.getImage_path());
+           Files.delete(originalFilePath);
+           Files.delete(smallFilePath);
+           Files.delete(thumbnailFilePath);
+       }catch (NoSuchFileException e){
+           e.getMessage();
+           throw new ApiRequestException("the image in the given path was not found", HttpStatus.BAD_REQUEST);
+       }
+       deletePhoto(photoId);
+   }
+
+   public void deletePhoto (final Integer photoId){
+        photoRepository.deleteById(photoId);
    }
 
 }

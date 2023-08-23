@@ -28,13 +28,16 @@ public class PhotoController {
 
 
     @PostMapping("/article/{articleId}")
-    public ResponseEntity<Photo> savePhotoForArticleId(@RequestParam("file") MultipartFile file,
-                                                       @PathVariable Integer articleId) throws IOException {
+    public ResponseEntity<Photo> savePhotoForArticleId(@RequestParam("file") MultipartFile file, @PathVariable Integer articleId) throws IOException {
 
             Photo photo = photoService.savePhotoForArticle(file, articleId);
-
             return new ResponseEntity<>(photo, HttpStatus.CREATED);
+    }
 
+
+    @DeleteMapping("/{photoId}")
+    public void deletePhoto(@PathVariable final Integer photoId) throws IOException {
+        photoService.deletePhotoForArticle(photoId);
     }
 
 
