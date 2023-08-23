@@ -4,10 +4,13 @@ import com.example.ShopForElectronicGoods.Exception.ApiRequestException;
 import com.example.ShopForElectronicGoods.models.ArticlePrice;
 import com.example.ShopForElectronicGoods.repository.ArticlePriceRepository;
 import com.example.ShopForElectronicGoods.repository.ArticleRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,6 +25,8 @@ public class ArticlePriceService {
     @Autowired
     private ArticleRepository articleRepository;
 
+    @Autowired
+    private  EntityManager entityManager;
 
     public ArticlePrice getArticlePriceById(Integer articlePriceId){
         return articlePriceRepository.findById(articlePriceId).orElseThrow(
@@ -55,11 +60,6 @@ public class ArticlePriceService {
          articlePriceRepository.deleteById(articlePriceId);
     }
 
-    //TODO:  Ovo je drugi nacin na koji mozemo da dodajemo decu roditeljima.
-    /*Article article = // dohvatite Article objekt
-ArticlePrice articlePrice = new ArticlePrice();
-articlePrice.setPrice(120.00);
-articlePrice.setCreatedAtPrice(new Date());
-articlePrice.setArticle(article); // Postavite Article
-article.getArticlePrice().add(articlePrice); // Dodajte ArticlePrice u set*/
+
+
 }

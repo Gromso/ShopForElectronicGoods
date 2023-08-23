@@ -4,6 +4,7 @@ import com.example.ShopForElectronicGoods.models.Article;
 import com.example.ShopForElectronicGoods.models.ArticlePrice;
 import com.example.ShopForElectronicGoods.models.Feature;
 import com.example.ShopForElectronicGoods.modelsDTO.ArticleDTO.ArticleAddDTO;
+import com.example.ShopForElectronicGoods.modelsDTO.ArticleDTO.ArticleEditDTO;
 import com.example.ShopForElectronicGoods.services.ArticleServices.ArticleArticlePriceService;
 import com.example.ShopForElectronicGoods.services.ArticleServices.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,14 +60,22 @@ public class ArticleController {
  }
 
     @PutMapping("/edit/{articleId}")
-    public Article editArticleById(@RequestBody Article article,@PathVariable Integer articleId){
+    public Article editArticleById(@RequestBody Article article,@PathVariable final Integer articleId){
         return articleService.editArticleOrSave(article,articleId);
     }
 
-    @DeleteMapping("/delete/{articleId}")
-    public void deleteArticleById(@PathVariable Integer articleId){
-        articleService.deleteArticleById(articleId);
+    @PutMapping("/editFull/{articleId}")
+    public ResponseEntity<Article> editFullArticle(@RequestBody ArticleEditDTO article,
+                                                   @PathVariable final Integer articleId){
+        Article article1 = articleService.editFullArticle(article, articleId);
+
+        return ResponseEntity.ok(article1);
     }
+
+   // @DeleteMapping("/delete/{articleId}")
+   // public void deleteArticleById(@PathVariable Integer articleId){
+       // articleService.deleteArticleById(articleId);
+   // }
 
     @GetMapping("/articlePrice/{articleId}")
     public ResponseEntity<List<ArticlePrice>> getPricesForArticle(@PathVariable Integer articleId) {
