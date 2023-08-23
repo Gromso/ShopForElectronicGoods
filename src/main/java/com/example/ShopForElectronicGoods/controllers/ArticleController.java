@@ -32,6 +32,12 @@ public class ArticleController {
         return articleService.findArticleById(articleId);
     }
 
+    @GetMapping("/articles")
+    public ResponseEntity<List<Article>> getAllArticle(){
+        List<Article> allArticle = articleService.findAllArticle();
+        return ResponseEntity.ok(allArticle);
+    }
+
     @GetMapping("/all/{articleId}/articleFeature")
     public ResponseEntity<List<Feature>> getArticleFeatureBuArticleId(@PathVariable final Integer articleId){
         List<Feature> af = articleService.findArticleFeatureByArticle(articleId);

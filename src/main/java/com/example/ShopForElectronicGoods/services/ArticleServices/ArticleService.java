@@ -36,9 +36,8 @@ public class ArticleService {
         return articleRepository.findById(articleId).orElse(null);
     }
 
-    public void deleteArticleById(Integer articleId){
-        articleRepository.deleteById(articleId);
-        throw new ApiRequestException("message", 1001);
+    public List<Article> findAllArticle(){
+        return articleRepository.findAll();
     }
 
     public Article addArticleDTO(ArticleAddDTO articleDto){
@@ -117,5 +116,8 @@ public class ArticleService {
         List<Feature> articleFeatures = articleFeatureRepository.findArticleFeatureByArticleId(articleId);
         return articleFeatures;
     }
-
+    public void deleteArticleById(Integer articleId){
+        articleRepository.deleteById(articleId);
+        throw new ApiRequestException("message", 1001);
+    }
 }
