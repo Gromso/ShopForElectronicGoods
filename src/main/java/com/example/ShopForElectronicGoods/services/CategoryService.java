@@ -53,9 +53,6 @@ public class CategoryService {
         if(Objects.nonNull(category.getImage_path()) && !"".equalsIgnoreCase(category.getImage_path())){
             categoryById.setImage_path(category.getImage_path());
         }
-        if(Objects.nonNull(category.getArticles())){
-            categoryById.setArticles(category.getArticles());
-        }
         return categoryRepository.save(categoryById);
     }
 
