@@ -44,23 +44,27 @@ public class PhotoService {
 
    public Photo savePhotoForArticle(MultipartFile file, Integer articleId) throws IOException {
        if (file.isEmpty()) {
-           throw new ApiRequestException("File not found");
+           throw new ApiRequestException("File is Empty");
        }
        String mimeType = new Tika().detect(file.getInputStream());
+
        // Dopustite samo određene MIME tipove (npr. image/jpeg i image/png)
        if (!mimeType.equals("image/jpeg") && !mimeType.equals("image/png")) {
            throw new ApiRequestException("Samo JPEG i PNG slike su dozvoljene.", HttpStatus.NOT_ACCEPTABLE);
        }
-       String originalFileName = Objects.requireNonNull(file.getOriginalFilename());
-       String image_Name = AddPhotoConfig.generateFileName(Objects.requireNonNull(originalFileName));
+       String image_Name = AddPhotoConfig.generateFileName(Objects.requireNonNull(file.getOriginalFilename()));
 
        Path originalFilePath = Paths.get(uploadDir+"normalImages/", image_Name);
-       Path thumbnailFilePath = Paths.get(uploadDir + "thumbnailsImages/", image_Name);
+       Path smallFilePath = Paths.get(uploadDir + "small/", image_Name);
+       Path thumbnailFilePath = Paths.get(uploadDir + "thumb/", image_Name);
 
 
        try {
-           Files.write(originalFilePath, file.getBytes());
-           AddPhotoConfig.uploadThumbnail(originalFilePath, thumbnailFilePath);
+
+           AddPhotoConfig.uploadOriginalFile(originalFilePath, file);
+           AddPhotoConfig.uploadSmallFile(originalFilePath,smallFilePath);
+           AddPhotoConfig.uploadThumbnailFile(originalFilePath, thumbnailFilePath);
+
 
        } catch (IOException e) {
            throw new ApiRequestException("Greška pri spremanju slike", HttpStatus.INTERNAL_SERVER_ERROR);
