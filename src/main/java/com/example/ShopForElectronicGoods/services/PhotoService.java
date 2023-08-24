@@ -30,6 +30,7 @@ import java.util.*;
 @Service
 public class PhotoService {
 
+   // private final String URL = "D:\\java_programs\\projekti\\storage\\photos";
 
     @Value("${upload.dir}")
     private String uploadDir;

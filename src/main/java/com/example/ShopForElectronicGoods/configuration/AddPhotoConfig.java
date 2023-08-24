@@ -17,28 +17,36 @@ import java.util.*;
 
 public class AddPhotoConfig {
 
-
-    private static int[] generateUniqueNumbers() {
-        int[] nizBrojeva = new int[9];
+    private static String generateUniqueNumbers() {
         Random random = new Random();
-
         Set<Integer> dodijeljeniBrojevi = new HashSet<>();
-        for (int i = 0; i < nizBrojeva.length; i++) {
+        StringBuilder sb = new StringBuilder();
+        while (dodijeljeniBrojevi.size() < 9) {
             int randomNum;
             do {
                 randomNum = 1 + random.nextInt(9);
             } while (dodijeljeniBrojevi.contains(randomNum));
-            nizBrojeva[i] = randomNum;
+            // Dodajte broj u string builder
+            sb.append(randomNum);
+            // Dodajte razmak između brojeva (opcionalno)
+            if (dodijeljeniBrojevi.size() < 8) {
+                sb.append(" ");
+            }
             dodijeljeniBrojevi.add(randomNum);
         }
-        return nizBrojeva;
+        return sb.toString();
     }
 
-    public static String generateFileName(String OriginalFileName) {
-        String fileReplaceName= OriginalFileName.replaceAll("[^A-Za-z0-9./\\s-]", "");
+    public static String generateFileName(String originalFileName) {
+        // Uklonite sve karaktere osim alfanumeričkih i zamijenite ih donjom crtom
+        String sanitizedFileName = originalFileName.replaceAll("[^A-Za-z0-9./\\s_]", "");
         Instant now = Instant.now();
-        int[] nizBrojeva = generateUniqueNumbers();
-        return now.getEpochSecond() + Arrays.toString(nizBrojeva) +  fileReplaceName.toLowerCase();
+        String uniqueNumbers = generateUniqueNumbers();
+        String  ee = uniqueNumbers.replace(" ", "");
+        // Dodajte vreme i brojeve u ime fajla
+        return now.getEpochSecond() + ee + sanitizedFileName.toLowerCase();
+
+
     }
 
     public static void uploadOriginalFile(Path originalFilePath , MultipartFile file ) throws IOException {
@@ -46,6 +54,7 @@ public class AddPhotoConfig {
             Files.createDirectories(originalFilePath.getParent());
         }
         Files.write(originalFilePath, file.getBytes());
+
     }
 
 
