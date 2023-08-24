@@ -10,7 +10,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebMvcConfig implements WebMvcConfigurer {
 
 
-     private final String URL = "D:\\java_programs\\projekti\\storage\\photos";
+     private final String URL ="D:\\java_programs\\projekti\\storage\\photos";
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
