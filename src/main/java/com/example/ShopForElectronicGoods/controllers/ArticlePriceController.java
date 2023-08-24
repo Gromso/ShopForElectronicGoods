@@ -6,12 +6,13 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/articlePrice")
+@RequestMapping("/api/articlePrice")
 public class ArticlePriceController {
 
 
@@ -33,6 +34,7 @@ public class ArticlePriceController {
     }
 
     @PostMapping("/add/{articleId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ArticlePrice> addArticlePriceForArticle(@RequestBody ArticlePrice articlePrice,
                                                                   @PathVariable final Integer articleId){
         ArticlePrice a = articlePriceService.addArticlePrice(articlePrice,articleId);
@@ -41,6 +43,7 @@ public class ArticlePriceController {
 
 
     @PutMapping("/editAP/{articlePriceId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ArticlePrice> editArticlePrice(@RequestBody ArticlePrice articlePrice,
                                                          @PathVariable final Integer articlePriceId){
         ArticlePrice ap = articlePriceService.editArticlePrice(articlePrice,articlePriceId);
@@ -48,6 +51,7 @@ public class ArticlePriceController {
     }
 
     @DeleteMapping("/articlePriceId")
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteArticlePriceByID(@PathVariable final Integer articlePriceId){
         articlePriceService.deleteArticlePriceById(articlePriceId);
     }

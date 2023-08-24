@@ -41,6 +41,8 @@ public class AuthenticationService {
         String encodePassword = passwordEncoder.encode(password);
         Role userRole = roleRepository.findByAuthority("USER").orElse(null);
 
+
+
         Set<Role> authority= new HashSet<>();
         authority.add(userRole);
 

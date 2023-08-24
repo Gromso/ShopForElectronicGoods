@@ -13,10 +13,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/article")
+@RequestMapping("/api/article")
 @CrossOrigin("*")
 public class ArticleController {
 
@@ -28,12 +29,14 @@ public class ArticleController {
     private ArticleArticlePriceService articleArticlePriceService;
 
     @GetMapping("/{articleId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     public Article getArticleById(@PathVariable Integer articleId){
         return articleService.findArticleById(articleId);
     }
 
     @GetMapping("/articles")
+    //@PreAuthorize("hasRole('USER')")
+    //@PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<List<Article>> getAllArticle(){
         List<Article> allArticle = articleService.findAllArticle();
         return ResponseEntity.ok(allArticle);
@@ -46,6 +49,7 @@ public class ArticleController {
     }
 
  @PostMapping("/add/{categoryId}/article")
+ @PreAuthorize("hasRole('ADMIN')")
  public ResponseEntity<Article> addArticle(@PathVariable Integer categoryId,
                                            @RequestBody Article article) {
     Article articleArticle = articleService.addArticle(article,categoryId);
@@ -53,18 +57,24 @@ public class ArticleController {
  }
 
  @PostMapping("/add/articleDto")
+ @PreAuthorize("hasRole('ADMIN')")
  public ResponseEntity<Article> addArticleWithDto(@RequestBody ArticleAddDTO body){
         Article ad = articleService.addArticleDTO(body);
 
         return new ResponseEntity<>(ad, HttpStatus.CREATED);
  }
 
+
+
     @PutMapping("/edit/{articleId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public Article editArticleById(@RequestBody Article article,@PathVariable final Integer articleId){
         return articleService.editArticleOrSave(article,articleId);
     }
 
+
     @PutMapping("/editFull/{articleId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Article> editFullArticle(@RequestBody ArticleEditDTO article,
                                                    @PathVariable final Integer articleId){
         Article article1 = articleService.editFullArticle(article, articleId);
@@ -99,15 +109,5 @@ public class ArticleController {
         return new ResponseEntity<>(allArticlePrices, HttpStatus.OK);
     }
 
-    @GetMapping("/article/latestPrice/{articleId}")
-    public ResponseEntity<Article> findArticleWithLatestPrice(@PathVariable Integer articleId) {
-        Article article = articleService.findArticleById(articleId);
-        if (article == null) {
-            // Ovdje možete obraditi slučaj kada članak nije pronađen
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        Article articlee = articleArticlePriceService.findArticleWithLatestPrice(article);
-        return new ResponseEntity<>(articlee, HttpStatus.OK);
-    }
 
 }

@@ -36,8 +36,16 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return userRepository.findByEmail(email).orElseThrow();
+        ApplicationUser user = userRepository.findByEmail(email).orElseThrow();
+
+        if(user == null){
+            throw new ApiRequestException("Could not find user", HttpStatus.NOT_FOUND);
+        }
+        return user;
     }
+
+
+
 
     public List<ApplicationUser> getAllUser(){
             return  userRepository.findAll();

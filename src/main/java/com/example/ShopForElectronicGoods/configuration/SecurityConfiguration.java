@@ -11,9 +11,12 @@ import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -27,6 +30,8 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
+
+@EnableMethodSecurity
 @Configuration
 public class SecurityConfiguration {
 
@@ -62,6 +67,7 @@ public class SecurityConfiguration {
                     //auth.requestMatchers("/article/**").hasAuthority("USER");
                    // auth.requestMatchers("/article/**").permitAll();  Na ovaj nacin omogucujemo gostima da pristupe bez loginovanja
                     auth.requestMatchers("/admin/**").hasRole("ADMIN");
+                    auth.requestMatchers("/api/**").permitAll();
                     auth.requestMatchers("/user/**").hasAnyRole("ADMIN","USER");
                     auth.anyRequest().authenticated();
                 })

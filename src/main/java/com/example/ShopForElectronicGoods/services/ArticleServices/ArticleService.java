@@ -6,7 +6,6 @@ import com.example.ShopForElectronicGoods.models.ENUMS.ArticleStatusEnum;
 import com.example.ShopForElectronicGoods.modelsDTO.ArticleDTO.ArticleAddDTO;
 import com.example.ShopForElectronicGoods.modelsDTO.ArticleDTO.ArticleEditDTO;
 import com.example.ShopForElectronicGoods.repository.*;
-import com.example.ShopForElectronicGoods.services.ArticlePriceService;
 
 import jakarta.persistence.*;
 

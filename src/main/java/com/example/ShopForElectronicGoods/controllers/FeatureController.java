@@ -6,13 +6,14 @@ import jakarta.persistence.EntityNotFoundException;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/feature")
+@RequestMapping("/api/feature")
 public class FeatureController {
 
     @Autowired
@@ -37,6 +38,7 @@ public class FeatureController {
     }
 
     @PostMapping("/add/{categoryId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Feature> addFeature(@RequestBody Feature feature,
                                               @PathVariable final Integer categoryId){
         try{
@@ -48,6 +50,7 @@ public class FeatureController {
     }
 
     @PutMapping("/edit/{featureId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Feature> editFeatureById(@RequestBody Feature feature, @PathVariable Integer featureId){
         try{
             Feature f = featureService.editFeature(feature, featureId);
@@ -58,6 +61,7 @@ public class FeatureController {
     }
 
     @DeleteMapping("/delete/{featureId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteFeatureById(@PathVariable Integer featureId){
         featureService.deleteFeatureById(featureId);
     }

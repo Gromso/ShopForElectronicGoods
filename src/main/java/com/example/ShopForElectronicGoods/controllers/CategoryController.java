@@ -11,13 +11,14 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/category")
+@RequestMapping("/api/category")
 @CrossOrigin("*")
 public class CategoryController {
 
@@ -47,6 +48,7 @@ public class CategoryController {
     }
 
     @PostMapping("/add")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Category> addCategory(@RequestBody Category category){
         try{
             Category c = categoryService.addCategory(category);
@@ -57,6 +59,7 @@ public class CategoryController {
     }
 
     @PutMapping("/edit/{categoryId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Category> editCategoryById(@RequestBody Category category, @PathVariable Integer categoryId){
         try{
             Category cache = categoryService.editCategoryById(category,categoryId);
@@ -67,6 +70,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/delete/{categoryId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteCategoryById(@PathVariable Integer categoryId){
         categoryService.deleteCategoryById(categoryId);
     }
