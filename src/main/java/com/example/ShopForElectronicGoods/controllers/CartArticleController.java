@@ -18,17 +18,4 @@ public class CartArticleController {
 
 
 
-
-
-    @PostMapping("/add/{cartId}/cart/{articleId}/article")
-    public ResponseEntity<CartArticleDTO> addCartArticleByCartIdAndArticleId(@RequestBody CartArticleDTO caDTO,
-                                                                             @PathVariable final Integer cartId,
-                                                                             @PathVariable final Integer articleId){
-        CartArticle ca = cartArticleService.addCartArticleByCartIdAndArticleId(CartArticle.from(caDTO),
-                cartId,articleId);
-        return new ResponseEntity<>(CartArticleDTO.from(ca), HttpStatus.CREATED);
-    }
-
-
-
 }

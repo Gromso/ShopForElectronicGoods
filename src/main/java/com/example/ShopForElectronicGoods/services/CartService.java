@@ -98,6 +98,7 @@ public class CartService {
         CartResponseDTO responseDTO = new CartResponseDTO();
         responseDTO.setCart_id(cart.getCart_id());
         responseDTO.setUser_id(userId);
+        responseDTO.setCreated_at_cart(cart.getCreated_at_cart());
         responseDTO.setCartArticles(cartArticleDTOs);
 
         return responseDTO;
