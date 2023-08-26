@@ -20,4 +20,9 @@ public interface ArticleRepository extends JpaRepository<Article,Integer> {
 
     @Query("SELECT a FROM Article a WHERE a.category.category_id = :categoryId")
     List<Article> findByCategoryId(@Param("categoryId") Integer categoryId);
+
+    @Query("SELECT a FROM Article a " +
+            "JOIN CartArticle ca ON a.article_id = ca.article.article_id " +
+            "WHERE a.article_id = :articleId AND ca.cart_article_id = :cartArticleId")
+    Article findArticleByArticleIdAndCartArticleId(@Param("articleId") Integer articleId, @Param("cartArticleId") Integer cartArticleId);
 }

@@ -67,7 +67,7 @@ public class ArticleService {
         if (!results.isEmpty()) {
             return results.get(0);
         } else {
-            throw  new ApiRequestException("ArticlePrice is null", HttpStatus.BAD_REQUEST);
+          return null;
         }
     }
 

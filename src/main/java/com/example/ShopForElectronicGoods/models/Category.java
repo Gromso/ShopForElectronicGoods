@@ -32,9 +32,11 @@ public class Category {
     private String image_path;
 
     @OneToMany(mappedBy = "category")
+    @JsonIgnore
     private Set<Article> articles;
 
     @OneToMany(mappedBy = "category")
+    @JsonIgnore
     private Set<Feature> features;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -42,8 +44,16 @@ public class Category {
     @JsonIgnore
     private Category parent_category;
 
-    @OneToMany(mappedBy = "parent_category")
-    private Set<Category> categories;
+    /*@OneToMany(mappedBy = "parent_category")
+    @JsonIgnore
+    private Set<Category> categories;*/
+
+    public Integer getParentCategoryId() {
+        if (parent_category != null) {
+            return parent_category.getCategory_id();
+        }
+        return null;
+    }
 
 
 }

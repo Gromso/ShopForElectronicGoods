@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class CartArticleService {
@@ -31,35 +32,22 @@ public class CartArticleService {
                 new ApiRequestException("CartArticle with id " + cartArticleId + " not found", HttpStatus.NOT_FOUND));
     }
 
-    public List<CartArticle> getAllCartArticle(){
-        List<CartArticle> cartArticles = cartArticleRepository.findAll();
-        return cartArticles;
-    }
 
-   /* public CartArticle addCartArticleByCartIdAndArticleId(CartArticle cartArticle, Integer cartId, Integer articleId){
-        CartArticle cartArticlee = new CartArticle();
-        cartArticlee = cartRepository.findById(cartId).map(cart ->{
-            cartArticle.setCart(cart);
-            return cartArticleRepository.save(cartArticle);
-        }).orElseThrow(() -> new ApiRequestException("cart not found", HttpStatus.NOT_FOUND));
-        cartArticlee = articleRepository.findById(articleId).map(article ->{
-            cartArticle.setArticle(article);
-            return  cartArticleRepository.save(cartArticle);
-        }).orElseThrow(() -> new ApiRequestException("article not found", HttpStatus.NOT_FOUND));
 
-        return cartArticleRepository.save(cartArticlee);
-    }*/
-   public CartArticle addCartArticleByCartIdAndArticleId(CartArticle cartArticle, Integer cartId, Integer articleId) {
-       Cart cart = cartRepository.findById(cartId)
-               .orElseThrow(() -> new ApiRequestException("Cart not found", HttpStatus.NOT_FOUND));
+   public CartArticle updateCartArticleForQuantity(CartArticle cartArticle, Integer cartArticleId, int quantity){
+       CartArticle cartArticle2 = getCartArticleById(cartArticleId);
 
-       Article article = articleRepository.findById(articleId)
-               .orElseThrow(() -> new ApiRequestException("Article not found", HttpStatus.NOT_FOUND));
+       if(Objects.nonNull(cartArticle.getCart())){
+           cartArticle2.setCart(cartArticle.getCart());
+       }
+       if(Objects.nonNull(cartArticle.getArticle())){
+           cartArticle2.setArticle(cartArticle2.getArticle());
+       }
+       if(Objects.nonNull(cartArticle.getQuantity())){
+           cartArticle2.setQuantity(cartArticle2.getQuantity() + quantity);
+       }
 
-       cartArticle.setCart(cart);
-       cartArticle.setArticle(article);
-
-       return cartArticleRepository.save(cartArticle);
+      return cartArticleRepository.save(cartArticle2);
    }
 
 

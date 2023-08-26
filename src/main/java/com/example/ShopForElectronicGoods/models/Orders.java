@@ -11,8 +11,8 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name ="order")
-public class Order {
+@Table(name ="orders")
+public class Orders {
 
 
     @Id
@@ -27,7 +27,6 @@ public class Order {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id", nullable = false)
-    @JsonIgnore
     private Cart cart;
 
     @Enumerated(EnumType.STRING)

@@ -1,5 +1,6 @@
 package com.example.ShopForElectronicGoods.services;
 
+import com.example.ShopForElectronicGoods.models.ApplicationUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,6 +28,7 @@ public class TokenService {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(" "));
 
+        Integer userId = ((ApplicationUser) auth.getPrincipal()).getUser_id();
 
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
@@ -34,6 +36,7 @@ public class TokenService {
                 .expiresAt(now.plusSeconds(JWT_ACCESS_TOKEN_EXPIRY))
                 .subject(auth.getName())
                 .claim("roles", scope)
+                .claim("user_id", userId)
                 .build();
 
         return  jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();

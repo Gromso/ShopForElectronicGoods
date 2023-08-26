@@ -1,4 +1,4 @@
-package com.example.ShopForElectronicGoods.modelsDTO;
+package com.example.ShopForElectronicGoods.modelsDTO.Cart;
 
 import com.example.ShopForElectronicGoods.models.ApplicationUser;
 import com.example.ShopForElectronicGoods.models.Cart;

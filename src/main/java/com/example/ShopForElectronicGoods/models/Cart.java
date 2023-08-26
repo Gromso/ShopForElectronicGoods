@@ -1,12 +1,12 @@
 package com.example.ShopForElectronicGoods.models;
-import com.example.ShopForElectronicGoods.modelsDTO.CartDTO;
+import com.example.ShopForElectronicGoods.modelsDTO.Cart.CartDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.persistence.criteria.Fetch;
 import lombok.*;
 
 import java.util.Date;
 import java.util.Set;
+
 
 
 @Data
@@ -28,6 +28,7 @@ public class Cart {
     private ApplicationUser user;
 
     @OneToMany(mappedBy = "cart")
+    @JsonIgnore
     private Set<CartArticle> cartArticle;
 
     @Basic(optional = false)

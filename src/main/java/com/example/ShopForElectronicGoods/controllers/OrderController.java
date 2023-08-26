@@ -1,12 +1,10 @@
 package com.example.ShopForElectronicGoods.controllers;
 
-import com.example.ShopForElectronicGoods.models.Order;
+
+import com.example.ShopForElectronicGoods.models.Orders;
 import com.example.ShopForElectronicGoods.services.OrderService;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,28 +19,28 @@ public class OrderController {
 
 
     @GetMapping("/{orderId}")
-    public ResponseEntity<Order> getOrderById(@PathVariable final Integer orderId){
-        Order orderById = orderService.getOrderById(orderId);
+    public ResponseEntity<Orders> getOrderById(@PathVariable final Integer orderId){
+        Orders orderById = orderService.getOrderById(orderId);
         return ResponseEntity.ok(orderById);
     }
 
     @GetMapping("/orders")
-    public ResponseEntity<List<Order>> getAllOrders(){
-        List<Order> listOrders = orderService.getOrderList();
+    public ResponseEntity<List<Orders>> getAllOrders(){
+        List<Orders> listOrders = orderService.getOrderList();
         return ResponseEntity.ok(listOrders);
     }
 
     @PostMapping("/addOrder/{cartId}")
-    public ResponseEntity<Order> addOrder(@RequestBody Order order,
+    public ResponseEntity<Orders> addOrder(@RequestBody Orders order,
                                           @PathVariable  final Integer cartId){
-        Order order2 = orderService.addOrderByCartId(order, cartId);
+        Orders order2 = orderService.addOrderByCartId(order, cartId);
         return ResponseEntity.ok(order2);
     }
 
     @PutMapping("/editOrder/{orderId}")
-    public ResponseEntity<Order> editOrder(@RequestBody Order order,
+    public ResponseEntity<Orders> editOrder(@RequestBody Orders order,
                                            @PathVariable final Integer orderId){
-        Order order2 = orderService.editOrder(order,orderId);
+        Orders order2 = orderService.editOrder(order,orderId);
         return ResponseEntity.ok(order2);
     }
 
