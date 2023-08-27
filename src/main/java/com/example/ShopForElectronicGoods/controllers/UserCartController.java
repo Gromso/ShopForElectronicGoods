@@ -6,6 +6,7 @@ import com.example.ShopForElectronicGoods.models.Cart;
 import com.example.ShopForElectronicGoods.models.Orders;
 import com.example.ShopForElectronicGoods.modelsDTO.Cart.AddArticleToCartDTO;
 import com.example.ShopForElectronicGoods.modelsDTO.Cart.CartResponseDTO;
+import com.example.ShopForElectronicGoods.modelsDTO.Orders.OrdersResponseDTO;
 import com.example.ShopForElectronicGoods.repository.ArticleRepository;
 import com.example.ShopForElectronicGoods.services.CartService;
 import com.example.ShopForElectronicGoods.services.CartServices.CartServicesForActiveCart;
@@ -74,14 +75,17 @@ public class UserCartController {
 
     @PostMapping("/makeOrder")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Orders> makeOrder(@AuthenticationPrincipal Jwt principal){
+    public ResponseEntity<OrdersResponseDTO> makeOrder(@AuthenticationPrincipal Jwt principal){
         Long  userId = principal.getClaim("user_id");
         Cart cart =  cartServicesForActiveCart.getLastActiveCartByUserId(Math.toIntExact(userId));
         if(cart == null) {
            throw new ApiRequestException("Cart by cart id is null", HttpStatus.NOT_FOUND);
         }
         Orders orders = orderService.addOrderByCartId(cart.getCart_id());
-        return new ResponseEntity<>(orders, HttpStatus.CREATED);
+
+        OrdersResponseDTO ordersResponseDTO = cartServicesForActiveCart.getOrdersResponse(cart.getCart_id(),Math.toIntExact(userId), orders.getOrder_id());
+
+        return new ResponseEntity<>(ordersResponseDTO, HttpStatus.CREATED);
 
     }
 

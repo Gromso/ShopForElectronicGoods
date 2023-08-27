@@ -76,9 +76,6 @@ public class CartService {
             throw new ApiRequestException("cartArticle is Empty", HttpStatus.NOT_FOUND);
         }
 
-
-
-
         // Mapiranje na DTO objekte
         List<CartArticleDTO> cartArticleDTOs = cartArticles.stream()
                 .map(cartArticle -> {
