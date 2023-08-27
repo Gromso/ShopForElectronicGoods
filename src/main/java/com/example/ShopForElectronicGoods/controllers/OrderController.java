@@ -31,9 +31,8 @@ public class OrderController {
     }
 
     @PostMapping("/addOrder/{cartId}")
-    public ResponseEntity<Orders> addOrder(@RequestBody Orders order,
-                                          @PathVariable  final Integer cartId){
-        Orders order2 = orderService.addOrderByCartId(order, cartId);
+    public ResponseEntity<Orders> addOrder(@PathVariable  final Integer cartId){
+        Orders order2 = orderService.addOrderByCartId( cartId);
         return ResponseEntity.ok(order2);
     }
 

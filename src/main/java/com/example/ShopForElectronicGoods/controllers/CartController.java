@@ -1,7 +1,6 @@
 package com.example.ShopForElectronicGoods.controllers;
 
 import com.example.ShopForElectronicGoods.Exception.ApiRequestException;
-import com.example.ShopForElectronicGoods.models.Article;
 import com.example.ShopForElectronicGoods.models.Cart;
 import com.example.ShopForElectronicGoods.models.CartArticle;
 import com.example.ShopForElectronicGoods.modelsDTO.Cart.CartArticleDTO;

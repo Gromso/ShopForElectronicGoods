@@ -5,6 +5,7 @@ import com.example.ShopForElectronicGoods.models.ENUMS.OrderStatusEnum;
 import com.example.ShopForElectronicGoods.models.Orders;
 import com.example.ShopForElectronicGoods.repository.CartRepository;
 import com.example.ShopForElectronicGoods.repository.OrderRepository;
+import com.example.ShopForElectronicGoods.services.CartServices.CartServicesForActiveCart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,10 @@ public class OrderService {
     @Autowired
     private CartRepository cartRepository;
 
+    @Autowired
+    private CartServicesForActiveCart cartServicesForActiveCart;
+
+
 
     public Orders getOrderById(Integer orderId){
         return orderRepository.findById(orderId).orElseThrow(()
@@ -33,12 +38,18 @@ public class OrderService {
     }
 
 
-    public Orders addOrderByCartId(Orders order, final Integer cartId){
-        Orders order2 = cartRepository.findById(cartId).map(cart -> {
-            order.setCart(cart);
-           return orderRepository.save(order);
-        }).orElseThrow(() -> new ApiRequestException("Cart by " + cartId + " not Found", HttpStatus.NOT_FOUND));
-        return orderRepository.save(order2);
+    public Orders addOrderByCartId(final Integer cartId){
+        Orders orders = new Orders();
+        List<Orders> orders1 = orderRepository.getOrderByCartId(cartId);
+        if(!orders1.isEmpty()){
+          throw new ApiRequestException("Your order has been sent", HttpStatus.BAD_REQUEST);
+        }else {
+            Orders order2 = cartRepository.findById(cartId).map(cart -> {
+                orders.setCart(cart);
+                return orderRepository.save(orders);
+            }).orElseThrow(() -> new ApiRequestException("Cart by " + cartId + " not Found", HttpStatus.NOT_FOUND));
+            return orderRepository.save(order2);
+        }
     }
 
 
