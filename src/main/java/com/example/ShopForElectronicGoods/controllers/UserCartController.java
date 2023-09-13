@@ -2,15 +2,18 @@ package com.example.ShopForElectronicGoods.controllers;
 
 import com.example.ShopForElectronicGoods.Exception.ApiRequestException;
 import com.example.ShopForElectronicGoods.models.Cart;
-
+import com.example.ShopForElectronicGoods.models.CartArticle;
 import com.example.ShopForElectronicGoods.models.Orders;
 import com.example.ShopForElectronicGoods.modelsDTO.Cart.AddArticleToCartDTO;
 import com.example.ShopForElectronicGoods.modelsDTO.Cart.CartResponseDTO;
 import com.example.ShopForElectronicGoods.modelsDTO.Orders.OrdersResponseDTO;
-import com.example.ShopForElectronicGoods.repository.ArticleRepository;
-import com.example.ShopForElectronicGoods.services.CartService;
+import com.example.ShopForElectronicGoods.services.CartServices.CartService;
+import com.example.ShopForElectronicGoods.services.CartServices.CartServiceForMethod;
 import com.example.ShopForElectronicGoods.services.CartServices.CartServicesForActiveCart;
-import com.example.ShopForElectronicGoods.services.OrderService;
+import com.example.ShopForElectronicGoods.services.OrderService.OrderMailerService;
+import com.example.ShopForElectronicGoods.services.OrderService.OrderService;
+import jakarta.mail.MessagingException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,58 +27,48 @@ import org.springframework.web.bind.annotation.*;
 public class UserCartController {
 
 
-
-
     @Autowired
     private CartService cartService;
-
-    @Autowired
-    private ArticleRepository articleRepository;
 
     @Autowired
     private CartServicesForActiveCart cartServicesForActiveCart;
 
     @Autowired
+    private CartServiceForMethod cartServiceForMethod;
+
+    @Autowired
     private OrderService orderService;
 
-    private Cart getActiveCartForUserId(Long userId){
-        Cart userCart = cartServicesForActiveCart.getLastActiveCartByUserId(Math.toIntExact(userId));
-        Orders orderCart = null;
-        if(userCart != null ) {
-             orderCart = cartService.getOrderByCartId(userCart.getCart_id());
-        }
-        if(userCart == null || orderCart != null){
-            userCart =   cartService.createNewCartForUser(Math.toIntExact(userId));
-        }
+    @Autowired
+    private OrderMailerService orderMailerService;
 
-        return cartService.getCartById(userCart.getCart_id());
-    }
 
     @GetMapping("")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Cart> getCurrentCart (@AuthenticationPrincipal Jwt principal) {
+
+    public ResponseEntity<CartResponseDTO> getCurrentCart (@AuthenticationPrincipal Jwt principal) {
         Long  userId = principal.getClaim("user_id");
-         Cart cart = getActiveCartForUserId(userId);
+        CartResponseDTO cart = cartServiceForMethod.getActiveCartForUserId(userId);
         return ResponseEntity.ok(cart);
     }
 
 
     @PostMapping("/addToCart")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<CartResponseDTO> addArticlesToCart(@RequestBody AddArticleToCartDTO body,@AuthenticationPrincipal Jwt principal){
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<CartResponseDTO> addArticlesToCart(@Valid @RequestBody AddArticleToCartDTO body,
+                                                             @AuthenticationPrincipal Jwt principal){
 
         Long  userId = principal.getClaim("user_id");
-        Cart cart = getActiveCartForUserId(userId);
+        CartResponseDTO cart = cartServiceForMethod.getActiveCartForUserId(userId);
 
        Cart cart2 = cartService.addArticleToCart(cart.getCart_id(),body.getArticle_id(), body.getQuantity());
-        CartResponseDTO response = cartService.getListCartArticles(cart2.getCart_id(),Math.toIntExact(userId));
+        CartResponseDTO response = cartServiceForMethod.getListCartArticles(cart2.getCart_id(),Math.toIntExact(userId));
        return  new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 
     @PostMapping("/makeOrder")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<OrdersResponseDTO> makeOrder(@AuthenticationPrincipal Jwt principal){
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<OrdersResponseDTO> makeOrder(@AuthenticationPrincipal Jwt principal) throws MessagingException {
         Long  userId = principal.getClaim("user_id");
         Cart cart =  cartServicesForActiveCart.getLastActiveCartByUserId(Math.toIntExact(userId));
         if(cart == null) {
@@ -83,10 +76,38 @@ public class UserCartController {
         }
         Orders orders = orderService.addOrderByCartId(cart.getCart_id());
 
-        OrdersResponseDTO ordersResponseDTO = cartServicesForActiveCart.getOrdersResponse(cart.getCart_id(),Math.toIntExact(userId), orders.getOrder_id());
+        OrdersResponseDTO ordersResponseDTO = cartServiceForMethod.getOrdersResponse(cart.getCart_id(),
+                Math.toIntExact(userId), orders.getOrder_id());
 
-        return new ResponseEntity<>(ordersResponseDTO, HttpStatus.CREATED);
+        /*orderMailerService.sendHtmlEmail("some one", "ovo je subject", " ovo je bodt");
 
+      String message = orderMailerService.htmlBody(ordersResponseDTO);
+        orderMailerService.sendHtmlEmail(ordersResponseDTO.getCart().getUser().getEmail(),
+                "Purchase confirmation",
+                message);*/
+
+      return new ResponseEntity<>(ordersResponseDTO, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/update")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<CartResponseDTO > updateQuantityForArticle( @RequestBody AddArticleToCartDTO data,
+                                         @AuthenticationPrincipal Jwt principal){
+        Long  userId = principal.getClaim("user_id");
+        CartResponseDTO cart = cartServiceForMethod.getActiveCartForUserId(userId);
+        CartArticle ca = cartService.updateQuantityForArticle(cart.getCart_id(),data.getArticle_id(),data.getQuantity());
+        CartResponseDTO response = cartServiceForMethod.getListCartArticles(ca.getCart().getCart_id(),Math.toIntExact(userId));
+        return  new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<CartResponseDTO> deleteCartArticleForArticle(@RequestBody AddArticleToCartDTO data, @AuthenticationPrincipal Jwt principal){
+        Long  userId = principal.getClaim("user_id");
+        CartResponseDTO cart = cartServiceForMethod.getActiveCartForUserId(userId);
+        cartService.deleteCartArticleForArticle(cart.getCart_id(), data.getArticle_id());
+        CartResponseDTO response = cartServiceForMethod.getListCartArticles(cart.getCart_id(),Math.toIntExact(userId));
+        return  new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }

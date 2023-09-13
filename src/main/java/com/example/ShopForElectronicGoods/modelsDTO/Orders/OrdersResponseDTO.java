@@ -3,11 +3,13 @@ package com.example.ShopForElectronicGoods.modelsDTO.Orders;
 
 import com.example.ShopForElectronicGoods.models.ENUMS.OrderStatusEnum;
 import com.example.ShopForElectronicGoods.modelsDTO.Cart.CartResponseDTO;
+import jakarta.validation.constraints.Min;
 
 import java.util.Date;
 
 public class OrdersResponseDTO {
 
+    @Min(0)
     private Integer order_id;
     private Date created_at_order;
     private OrderStatusEnum status;

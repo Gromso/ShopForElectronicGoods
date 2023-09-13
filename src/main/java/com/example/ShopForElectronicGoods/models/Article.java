@@ -4,6 +4,8 @@ import com.example.ShopForElectronicGoods.models.ENUMS.ArticleStatusEnum;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import java.util.Set;
 
@@ -20,6 +22,8 @@ public class Article {
     private Integer article_id;
 
     @Column(name = "name", nullable = false)
+    @NotBlank
+    @Size(min = 0, max = 128)
     private String name;
 
     @OneToMany(mappedBy = "article")
@@ -36,9 +40,13 @@ public class Article {
     private Set<CartArticle> cartArticle;
 
     @Column (name = "excerpt", nullable = false)
+    @NotBlank
+    @Size(min = 0, max = 255)
     private String excerpt;
 
     @Column(name = "description", nullable = false)
+    @NotBlank
+    @Size(min = 0, max = 1000)
     private String description;
 
     @Enumerated(EnumType.STRING)

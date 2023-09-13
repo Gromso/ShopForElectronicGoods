@@ -1,10 +1,13 @@
 package com.example.ShopForElectronicGoods.controllers;
 
-
 import com.example.ShopForElectronicGoods.models.Orders;
-import com.example.ShopForElectronicGoods.services.OrderService;
+import com.example.ShopForElectronicGoods.services.OrderService.OrderService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,19 +28,15 @@ public class OrderController {
     }
 
     @GetMapping("/orders")
-    public ResponseEntity<List<Orders>> getAllOrders(){
-        List<Orders> listOrders = orderService.getOrderList();
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<List<Orders>> getAllOrders(@AuthenticationPrincipal Jwt principal){
+        Long  userId = principal.getClaim("user_id");
+        List<Orders> listOrders = orderService.getOrdersByUserId(Math.toIntExact(userId));
         return ResponseEntity.ok(listOrders);
     }
 
-    @PostMapping("/addOrder/{cartId}")
-    public ResponseEntity<Orders> addOrder(@PathVariable  final Integer cartId){
-        Orders order2 = orderService.addOrderByCartId( cartId);
-        return ResponseEntity.ok(order2);
-    }
-
     @PutMapping("/editOrder/{orderId}")
-    public ResponseEntity<Orders> editOrder(@RequestBody Orders order,
+    public ResponseEntity<Orders> editOrder(@Valid @RequestBody Orders order,
                                            @PathVariable final Integer orderId){
         Orders order2 = orderService.editOrder(order,orderId);
         return ResponseEntity.ok(order2);

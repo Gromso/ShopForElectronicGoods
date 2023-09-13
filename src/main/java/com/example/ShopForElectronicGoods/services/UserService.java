@@ -44,22 +44,21 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-
-
-
     public List<ApplicationUser> getAllUser(){
-            return  userRepository.findAll();
-
-
+        return  userRepository.findAll();
     }
+
+
     public ApplicationUser findUserById(Integer id){
             return userRepository.findById(id).orElseThrow(()-> new ApiRequestException("user with id" + id + " not found"));
     }
 
+
     public void deleteUserById(Integer id){
-        userRepository.deleteById(id);
-        throw new ApiRequestException("User with " + id + " id not found", HttpStatus.UPGRADE_REQUIRED, 1000);
+         userRepository.deleteById(id);
     }
+
+
 
     public ApplicationUser editUserById(RegistrationDTO data, Integer id) {
         ApplicationUser user = findUserById(id);

@@ -17,9 +17,4 @@ public interface ArticleFeatureRepository extends JpaRepository<ArticleFeature, 
 
     Optional<ArticleFeature> findArticleFeatureByValue(String value);
 
-   // @Query("SELECT af FROM ArticleFeature af WHERE af.article.article_id = :articleId")
-   // List<ArticleFeature> findArticleFeatureByArticleId(@Param("articleId") Integer articleId);
-   @Query("SELECT af.feature FROM ArticleFeature af " +
-           "WHERE af.article.article_id = :articleId")
-    List<Feature> findArticleFeatureByArticleId(@Param("articleId") Integer articleId);
 }

@@ -3,6 +3,7 @@ package com.example.ShopForElectronicGoods.Exception;
 import org.springframework.http.HttpStatus;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 
 public class ApiException {
     private final String message;
@@ -18,6 +19,7 @@ public class ApiException {
         this.statusCode = statusCode;
         this.timestamp = timestamp;
     }
+
 
     public int getStatusCode() {
         return statusCode;

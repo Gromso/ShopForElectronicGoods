@@ -3,6 +3,7 @@ package com.example.ShopForElectronicGoods.services;
 import com.example.ShopForElectronicGoods.Exception.ApiRequestException;
 import com.example.ShopForElectronicGoods.models.ApplicationUser;
 import com.example.ShopForElectronicGoods.models.Role;
+import com.example.ShopForElectronicGoods.models.UserToken;
 import com.example.ShopForElectronicGoods.modelsDTO.LoginResponseDTO;
 import com.example.ShopForElectronicGoods.repository.RoleRepository;
 import com.example.ShopForElectronicGoods.repository.UserRepository;
@@ -15,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,7 +41,7 @@ public class AuthenticationService {
 
     public ApplicationUser registerUser(String email, String password, String forename,String surname, String phone_number, String postal_address ){
         String encodePassword = passwordEncoder.encode(password);
-        Role userRole = roleRepository.findByAuthority("USER").orElse(null);
+        Role userRole = roleRepository.findByAuthority("ADMIN").orElse(null);
 
 
 
@@ -55,12 +57,21 @@ public class AuthenticationService {
             Authentication auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(email,password)
             );
+            Integer userId = ((ApplicationUser) auth.getPrincipal()).getUser_id();
+
             String token = tokenService.generateJwt(auth);
 
-           // String refreshToken = tokenService.generateRefreshJwt(auth);
-            return new LoginResponseDTO(userRepository.findByEmail(email).orElse(null), token);
+            String refreshToken = tokenService.generateRefreshJwt(auth);
+
+            tokenService.addToken(userId, refreshToken);
+
+            UserToken u = tokenService.getTokenByName(refreshToken);
+
+             String expires_at = u.getExpires_at();
+
+            return new LoginResponseDTO(userRepository.findByEmail(email).orElse(null), token, refreshToken,expires_at);
         }catch(Exception e){
-           return new LoginResponseDTO(null, "");
+           throw new ApiRequestException("Email or pass not good", HttpStatus.BAD_REQUEST, -3002);
         }
     }
    /*public LoginResponseDTO login(String email, String password){

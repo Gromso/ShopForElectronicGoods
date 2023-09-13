@@ -49,7 +49,12 @@ public class FeatureService {
     }
 
     public void deleteFeatureById(Integer featureId){
+        Feature f = getFeatureById(featureId);
+        if(f == null){
+            throw new ApiRequestException("Feature by ID " + featureId + " not found", HttpStatus.NOT_FOUND);
+        }
         featureRepository.deleteById(featureId);
+        throw new ApiRequestException("feature by ID " + featureId + " successfully deleted", HttpStatus.OK);
     }
 
 

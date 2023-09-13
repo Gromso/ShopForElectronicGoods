@@ -34,21 +34,7 @@ public class CartArticleService {
 
 
 
-   public CartArticle updateCartArticleForQuantity(CartArticle cartArticle, Integer cartArticleId, int quantity){
-       CartArticle cartArticle2 = getCartArticleById(cartArticleId);
 
-       if(Objects.nonNull(cartArticle.getCart())){
-           cartArticle2.setCart(cartArticle.getCart());
-       }
-       if(Objects.nonNull(cartArticle.getArticle())){
-           cartArticle2.setArticle(cartArticle2.getArticle());
-       }
-       if(Objects.nonNull(cartArticle.getQuantity())){
-           cartArticle2.setQuantity(cartArticle2.getQuantity() + quantity);
-       }
-
-      return cartArticleRepository.save(cartArticle2);
-   }
 
 
 }

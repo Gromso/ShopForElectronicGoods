@@ -1,4 +1,4 @@
-package com.example.ShopForElectronicGoods.services;
+package com.example.ShopForElectronicGoods.services.OrderService;
 
 import com.example.ShopForElectronicGoods.Exception.ApiRequestException;
 import com.example.ShopForElectronicGoods.models.ENUMS.OrderStatusEnum;
@@ -37,6 +37,10 @@ public class OrderService {
         return orderRepository.findAll();
     }
 
+    public List<Orders> getOrdersByUserId(Integer userId){
+        List<Orders> findOrdersByUserId = orderRepository.findByCartUser(userId);
+        return findOrdersByUserId;
+    }
 
     public Orders addOrderByCartId(final Integer cartId){
         Orders orders = new Orders();
@@ -68,7 +72,12 @@ public class OrderService {
     }
 
     public void deleteOrderById(final Integer orderId){
+        Orders o = getOrderById(orderId);
+        if(o == null){
+            throw new ApiRequestException("Order by ID " + orderId + " not found", HttpStatus.NOT_FOUND);
+        }
         orderRepository.deleteById(orderId);
+        throw new ApiRequestException("Order by ID " + orderId + " successfully deleted", HttpStatus.OK);
     }
 
 

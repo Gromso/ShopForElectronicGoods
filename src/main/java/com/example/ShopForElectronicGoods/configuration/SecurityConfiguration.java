@@ -63,10 +63,11 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable())// Customizer.withDefaults()
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/auth/**").permitAll();
+                    auth.requestMatchers("/assets/photos/**").permitAll();
                    // auth.requestMatchers("/article/").hasRole("ADMIN");
                     //auth.requestMatchers("/article/**").hasAuthority("USER");
                    // auth.requestMatchers("/article/**").permitAll();  Na ovaj nacin omogucujemo gostima da pristupe bez loginovanja
-                    auth.requestMatchers("/admin/**").hasRole("ADMIN");
+                    auth.requestMatchers("/admin/**").permitAll();
                     auth.requestMatchers("/api/**").permitAll();
                     auth.requestMatchers("/user/**").hasAnyRole("ADMIN","USER");
                     auth.anyRequest().authenticated();

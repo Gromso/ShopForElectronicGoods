@@ -4,6 +4,8 @@ package com.example.ShopForElectronicGoods.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 
@@ -29,6 +31,8 @@ public class ArticleFeature {
     private Feature feature;
 
     @Column(name = "value", nullable = false)
+    @NotBlank
+    @Size(min = 0, max = 255)
     private String value;
 
 

@@ -1,6 +1,5 @@
 package com.example.ShopForElectronicGoods.controllers;
 
-import com.example.ShopForElectronicGoods.Exception.ApiRequestException;
 import com.example.ShopForElectronicGoods.models.Photo;
 import com.example.ShopForElectronicGoods.services.PhotoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +16,8 @@ import java.io.IOException;
 public class PhotoController {
 
 
-
-
-
-
     @Autowired
     private PhotoService photoService;
-
-
-
 
 
     @PostMapping("/article/{articleId}")

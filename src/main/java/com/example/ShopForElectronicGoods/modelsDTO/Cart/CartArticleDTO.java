@@ -1,14 +1,19 @@
 package com.example.ShopForElectronicGoods.modelsDTO.Cart;
 
 import com.example.ShopForElectronicGoods.modelsDTO.ArticleDTO.ArticleDTO;
+import jakarta.validation.constraints.Min;
 
 import java.util.List;
 
 public class CartArticleDTO {
 
+    @Min(0)
     private Integer cartArticle_id;
+    @Min(0)
     private Integer cart_id;
+    @Min(0)
     private Integer article_id;
+    @Min(0)
     private Integer quantity;
     private ArticleDTO articles;
 

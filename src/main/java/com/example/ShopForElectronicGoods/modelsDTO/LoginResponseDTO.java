@@ -4,12 +4,20 @@ import com.example.ShopForElectronicGoods.models.ApplicationUser;
 
 public class LoginResponseDTO {
     private ApplicationUser user;
-    private String jwt;
+    private String token;
+    private String refreshToken;
+    private String expires_at;
 
 
-    public LoginResponseDTO(ApplicationUser user, String jwt) {
+    public LoginResponseDTO(ApplicationUser user, String token) {
         this.user = user;
-        this.jwt = jwt;
+        this.token = token;
+    }
+    public LoginResponseDTO(ApplicationUser user, String token, String refreshToken,String expires_at) {
+        this.user = user;
+        this.token = token;
+        this.refreshToken = refreshToken;
+        this.expires_at = expires_at;
     }
 
     public ApplicationUser getUser() {
@@ -20,11 +28,27 @@ public class LoginResponseDTO {
         this.user = user;
     }
 
-    public String getJwt() {
-        return jwt;
+    public String getToken() {
+        return token;
     }
 
-    public void setJwt(String jwt) {
-        this.jwt = jwt;
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+    public String getExpires_at() {
+        return expires_at;
+    }
+
+    public void setExpires_at(String expires_at) {
+        this.expires_at = expires_at;
     }
 }

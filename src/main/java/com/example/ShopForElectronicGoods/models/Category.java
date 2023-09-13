@@ -2,6 +2,8 @@ package com.example.ShopForElectronicGoods.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,9 +28,12 @@ public class Category {
     private Integer category_id;
 
     @Column(name = "name", nullable = false)
+    @NotBlank
+    @Size(min =2, max = 64)
     private String name;
 
     @Column (name = "image_path", nullable = false )
+    @Size(min = 2, max = 128)
     private String image_path;
 
     @OneToMany(mappedBy = "category")
@@ -54,6 +59,7 @@ public class Category {
         }
         return null;
     }
+
 
 
 }

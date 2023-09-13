@@ -1,8 +1,16 @@
 package com.example.ShopForElectronicGoods.modelsDTO.ArticleDTO;
 
+import jakarta.validation.constraints.*;
+
 public class Features {
 
+    @Min(1)
+    @Max(20)
+    @NotNull
     private Integer feature_id;
+
+    @NotBlank
+    @Size(min = 2, max = 128)
     private String value;
 
     // Konstruktor

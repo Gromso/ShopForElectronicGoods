@@ -6,25 +6,17 @@ import com.example.ShopForElectronicGoods.models.Article;
 import com.example.ShopForElectronicGoods.models.Photo;
 import com.example.ShopForElectronicGoods.repository.ArticleRepository;
 import com.example.ShopForElectronicGoods.repository.PhotoRepository;
-import net.coobird.thumbnailator.Thumbnails;
 import org.apache.tika.Tika;
-import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Instant;
 import java.util.*;
 
 @Service
@@ -41,14 +33,12 @@ public class PhotoService {
     private ArticleRepository articleRepository;
 
 
-
    public Photo savePhotoForArticle(MultipartFile file, Integer articleId) throws IOException {
        if (file.isEmpty()) {
            throw new ApiRequestException("File is Empty");
        }
        String mimeType = new Tika().detect(file.getInputStream());
 
-       // Dopustite samo određene MIME tipove (npr. image/jpeg i image/png)
        if (!mimeType.equals("image/jpeg") && !mimeType.equals("image/png")) {
            throw new ApiRequestException("Samo JPEG i PNG slike su dozvoljene.", HttpStatus.NOT_ACCEPTABLE);
        }
@@ -57,15 +47,11 @@ public class PhotoService {
        Path originalFilePath = Paths.get(uploadDir+"normalImages/", image_Name);
        Path smallFilePath = Paths.get(uploadDir + "small/", image_Name);
        Path thumbnailFilePath = Paths.get(uploadDir + "thumb/", image_Name);
-
-
        try {
 
            AddPhotoConfig.uploadOriginalFile(originalFilePath, file);
            AddPhotoConfig.uploadSmallFile(originalFilePath,smallFilePath);
            AddPhotoConfig.uploadThumbnailFile(originalFilePath, thumbnailFilePath);
-
-
        } catch (IOException e) {
            throw new ApiRequestException("Greška pri spremanju slike", HttpStatus.INTERNAL_SERVER_ERROR);
        }
@@ -102,7 +88,10 @@ public class PhotoService {
    }
 
    public void deletePhoto (final Integer photoId){
+        photoRepository.findById(photoId).orElseThrow(()->
+               new ApiRequestException("Photo by ID " + photoId + " not found",HttpStatus.NOT_FOUND ));
         photoRepository.deleteById(photoId);
+        throw new ApiRequestException("Photo by ID " + photoId + " successfully deleted", HttpStatus.OK);
    }
 
 }

@@ -1,10 +1,13 @@
 package com.example.ShopForElectronicGoods.controllers;
 
+import com.example.ShopForElectronicGoods.Exception.ApiRequestException;
 import com.example.ShopForElectronicGoods.models.Feature;
 import com.example.ShopForElectronicGoods.services.FeatureService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
@@ -27,11 +30,12 @@ public class FeatureController {
             Feature f = featureService.getFeatureById(featureId);
             return ResponseEntity.ok(f);
         }catch (EntityNotFoundException e){
-            return ResponseEntity.notFound().build();
+            throw new ApiRequestException(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
     @GetMapping("/features")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Feature>> getAllFeature(){
         List<Feature> features =  featureService.getAllFeatures();
         return ResponseEntity.ok(features);
@@ -39,7 +43,7 @@ public class FeatureController {
 
     @PostMapping("/add/{categoryId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Feature> addFeature(@RequestBody Feature feature,
+    public ResponseEntity<Feature> addFeature(@Valid @RequestBody Feature feature,
                                               @PathVariable final Integer categoryId){
         try{
             Feature f = featureService.addFeature(feature,categoryId);
@@ -51,7 +55,7 @@ public class FeatureController {
 
     @PutMapping("/edit/{featureId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Feature> editFeatureById(@RequestBody Feature feature, @PathVariable Integer featureId){
+    public ResponseEntity<Feature> editFeatureById(@Valid @RequestBody Feature feature, @PathVariable Integer featureId){
         try{
             Feature f = featureService.editFeature(feature, featureId);
             return ResponseEntity.ok(f);

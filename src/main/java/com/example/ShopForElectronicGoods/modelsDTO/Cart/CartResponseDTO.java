@@ -1,15 +1,22 @@
 package com.example.ShopForElectronicGoods.modelsDTO.Cart;
 
 
+import com.example.ShopForElectronicGoods.models.ApplicationUser;
 import com.example.ShopForElectronicGoods.models.CartArticle;
+import com.example.ShopForElectronicGoods.modelsDTO.ArticleDTO.ArticlePriceDTO;
+import com.example.ShopForElectronicGoods.modelsDTO.RegistrationDTO;
+import jakarta.validation.constraints.Min;
 
 import java.util.Date;
 import java.util.List;
 
 public class CartResponseDTO {
 
+    @Min(0)
     private Integer cart_id;
+    @Min(0)
     private Integer user_id;
+    private RegistrationDTO user;
     private Date created_at_cart;
     private List<CartArticleDTO> cartArticles;
 
@@ -29,6 +36,14 @@ public class CartResponseDTO {
         this.user_id = user_id;
     }
 
+    public RegistrationDTO getUser() {
+        return user;
+    }
+
+    public void setUser(RegistrationDTO user) {
+        this.user = user;
+    }
+
     public Date getCreated_at_cart() {
         return created_at_cart;
     }
@@ -44,4 +59,6 @@ public class CartResponseDTO {
     public void setCartArticles(List<CartArticleDTO> cartArticles) {
         this.cartArticles = cartArticles;
     }
+
+
 }

@@ -3,6 +3,7 @@ package com.example.ShopForElectronicGoods.modelsDTO.Cart;
 import com.example.ShopForElectronicGoods.models.ApplicationUser;
 import com.example.ShopForElectronicGoods.models.Cart;
 import com.example.ShopForElectronicGoods.models.CartArticle;
+import jakarta.validation.constraints.Min;
 import lombok.Data;
 
 import java.util.Date;
@@ -11,6 +12,7 @@ import java.util.Set;
 @Data
 public class CartDTO {
 
+    @Min(0)
     private Integer cartId;
     private ApplicationUser user;
     private Set<CartArticle> cartArticle;

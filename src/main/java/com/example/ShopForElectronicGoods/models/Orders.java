@@ -25,7 +25,7 @@ public class Orders {
     @Temporal(TemporalType.TIMESTAMP)
     private Date created_at_order;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cart_id", nullable = false)
     private Cart cart;
 

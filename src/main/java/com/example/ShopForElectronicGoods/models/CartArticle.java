@@ -2,6 +2,7 @@ package com.example.ShopForElectronicGoods.models;
 import com.example.ShopForElectronicGoods.modelsDTO.CartArticleDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.*;
 
 @Data
@@ -26,6 +27,7 @@ public class CartArticle {
     private Article article;
 
     @Column(name = "quantity", nullable = false)
+    @Min(0)
     private int quantity;
 
     public static CartArticle from (CartArticleDTO cartArticleDTO){

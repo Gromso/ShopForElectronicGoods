@@ -1,6 +1,8 @@
 package com.example.ShopForElectronicGoods.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Data
@@ -21,6 +23,7 @@ public class Photo {
     private Article article;
 
     @Column(name = "image_path", nullable= false)
+    @Size(min = 2, max = 128)
     private String image_path;
 
 }

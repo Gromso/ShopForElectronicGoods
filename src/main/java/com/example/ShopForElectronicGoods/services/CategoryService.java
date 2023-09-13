@@ -5,6 +5,7 @@ import com.example.ShopForElectronicGoods.models.Category;
 import com.example.ShopForElectronicGoods.repository.CategoryRepository;
 import com.example.ShopForElectronicGoods.services.ArticleServices.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -21,7 +22,7 @@ public class CategoryService {
 
 
     public Category getCategoryById(Integer categoryId) {
-        return categoryRepository.findById(categoryId).orElseThrow(() -> new  ApiRequestException("Category with id " + categoryId + " not found"));
+        return categoryRepository.findById(categoryId).orElseThrow(() -> new  ApiRequestException("Category with id " + categoryId + " not found", HttpStatus.NOT_FOUND));
     }
 
     public List<Category> getAllCategory(){
@@ -31,15 +32,19 @@ public class CategoryService {
 
 
     public Category addCategory(Category category){
-       Category parentCategory = category.getParent_category();
 
-// Kreirajte novu podkategoriju "Laptopovi" i postavite joj nadređenu kategoriju
+
         Category laptopCategory = new Category();
         laptopCategory.setName(category.getName());
         laptopCategory.setImage_path(category.getImage_path());
-        laptopCategory.setParent_category(parentCategory); // Postavite parent kategoriju
 
-// Dodajte novu podkategoriju u bazu*
+        if (category.getParentCategoryId() != null) {
+            Category parentCategory = categoryRepository.findById(category.getParentCategoryId()).orElse(null);
+            System.out.println(parentCategory + " eee");
+            category.setParent_category(parentCategory);
+        }
+        System.out.println(category.getParentCategoryId() + " aaaaa");
+
        return categoryRepository.save(category);
     }
 
@@ -58,7 +63,12 @@ public class CategoryService {
 
 
     public void deleteCategoryById(Integer categoryId){
-        categoryRepository.deleteById(categoryId);
+        Category c = getCategoryById(categoryId);
+        if(c ==  null){
+            throw new ApiRequestException("Category by ID " + categoryId + " not found", HttpStatus.NOT_FOUND);
+        }
+                categoryRepository.deleteById(categoryId);
+        throw new ApiRequestException("Category by ID " + categoryId + " deleted successfully", HttpStatus.OK);
     }
 
 }

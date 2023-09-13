@@ -1,11 +1,31 @@
 package com.example.ShopForElectronicGoods.modelsDTO;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+
 public class RegistrationDTO {
+
+    @NotBlank
+    @Email(message = "invalid Email or password")
     private String email;
+
+    @NotBlank
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$", message ="invalid Email or password")
+    @Size(max = 64)
     private String password;
+    @NotBlank
+    @Size(min = 2, max = 64)
     private String forename;
+    @NotBlank
+    @Size(min = 2, max = 64)
     private String surname;
+    @NotBlank
+    @Size(min = 2, max = 64)
     private String phone_number;
+    @NotBlank
+    @Size(min = 5, max = 200)
     private String postal_address;
 
     public RegistrationDTO(){}

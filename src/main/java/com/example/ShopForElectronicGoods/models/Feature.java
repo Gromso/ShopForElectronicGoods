@@ -2,6 +2,8 @@ package com.example.ShopForElectronicGoods.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.Set;
@@ -20,11 +22,13 @@ public class Feature {
     private Integer feature_id;
 
     @Column(name = "name", nullable = false)
+    @NotBlank
+    @Size(min = 2, max = 128)
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id", nullable = false)
-    @JsonIgnore
+   // @JsonIgnore
     private Category category;
 
     @OneToMany(mappedBy = "feature")

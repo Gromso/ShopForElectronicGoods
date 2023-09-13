@@ -26,9 +26,7 @@ public class AddPhotoConfig {
             do {
                 randomNum = 1 + random.nextInt(9);
             } while (dodijeljeniBrojevi.contains(randomNum));
-            // Dodajte broj u string builder
             sb.append(randomNum);
-            // Dodajte razmak između brojeva (opcionalno)
             if (dodijeljeniBrojevi.size() < 8) {
                 sb.append(" ");
             }
@@ -38,12 +36,10 @@ public class AddPhotoConfig {
     }
 
     public static String generateFileName(String originalFileName) {
-        // Uklonite sve karaktere osim alfanumeričkih i zamijenite ih donjom crtom
         String sanitizedFileName = originalFileName.replaceAll("[^A-Za-z0-9./\\s_]", "");
         Instant now = Instant.now();
         String uniqueNumbers = generateUniqueNumbers();
         String  ee = uniqueNumbers.replace(" ", "");
-        // Dodajte vreme i brojeve u ime fajla
         return now.getEpochSecond() + ee + sanitizedFileName.toLowerCase();
 
 

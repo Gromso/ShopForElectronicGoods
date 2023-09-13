@@ -3,6 +3,7 @@ package com.example.ShopForElectronicGoods.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -19,24 +20,37 @@ public class ApplicationUser implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private Integer user_id;
+    private Integer userId;
 
     @Column(name = "email", nullable = false, unique = true)
+    @NotBlank
+    @Email(message = "invalid Email or password")
     private String email;
 
     @Column(name = "password_hash", nullable = false)
+    @NotBlank
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$", message ="invalid Email or password")
+    @Size(max = 64)
     private String password_hash;
 
     @Column(name = "forename", nullable = false)
+    @NotBlank
+    @Size(min = 2, max = 64)
     private String forename;
 
     @Column(name = "surname", nullable = false)
+    @NotBlank
+    @Size(min = 2, max = 64)
     private String surname;
 
     @Column(name = "phone_number", nullable = false, unique = true)
+    @NotBlank
+    @Size(min = 5, max = 64)
     private String phone_number;
 
     @Column(name = "postal_address", nullable = false)
+    @NotBlank
+    @Size(min = 5, max = 200)
     private String postal_address;
 
     @OneToMany( mappedBy="user",fetch = FetchType.LAZY)
@@ -44,7 +58,6 @@ public class ApplicationUser implements UserDetails {
     private Set<Cart> cart;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JsonIgnore
     @JoinTable(
             name = "user_role",
             joinColumns = {@JoinColumn(name = "user_id")},
@@ -59,7 +72,7 @@ public class ApplicationUser implements UserDetails {
 
     public ApplicationUser(Integer user_id, String email, String password_hash, String forename, String surname, String phone_number, String postal_address, Set<Role> authorities) {
         super();
-        this.user_id = user_id;
+        this.userId = user_id;
         this.email = email;
         this.password_hash = password_hash;
         this.forename = forename;
@@ -71,7 +84,7 @@ public class ApplicationUser implements UserDetails {
 
     public ApplicationUser(Integer user_id,String email, String password_hash, Set<Role> authorities){
         super();
-        this.user_id =user_id;
+        this.userId =user_id;
         this.email= email;
         this.password_hash = password_hash;
         this.authorities = authorities;
@@ -128,11 +141,11 @@ public class ApplicationUser implements UserDetails {
     }
 
     public Integer getUser_id() {
-        return user_id;
+        return userId;
     }
 
     public void setUser_id(Integer user_id) {
-        this.user_id = user_id;
+        this.userId = user_id;
     }
 
     public String getForename() {
