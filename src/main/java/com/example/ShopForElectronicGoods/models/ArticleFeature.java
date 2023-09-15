@@ -1,6 +1,7 @@
 package com.example.ShopForElectronicGoods.models;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.*;
@@ -26,8 +27,9 @@ public class ArticleFeature {
     @JoinColumn(name = "article_id", nullable = false)
     private Article article;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "feature_id", nullable = false)
+    @JoinColumn(name = "featureId",referencedColumnName = "feature_id",  nullable = false)
     private Feature feature;
 
     @Column(name = "value", nullable = false)

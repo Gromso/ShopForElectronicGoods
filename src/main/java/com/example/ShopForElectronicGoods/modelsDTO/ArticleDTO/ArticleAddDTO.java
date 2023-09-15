@@ -11,14 +11,16 @@ import java.math.BigDecimal;
 @Data()
 public class ArticleAddDTO {
 
+    @Min(0)
+    @Max(20)
+    @NotNull
+    private Integer categoryId;
+
+
     @NotBlank
     @Size(min = 2, max = 128)
     private String name;
 
-    @Min(1)
-    @Max(20)
-    @NotNull
-    private Integer categoryId;
 
     @NotBlank
     @Size(min = 2, max = 255)

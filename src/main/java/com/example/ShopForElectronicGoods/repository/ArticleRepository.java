@@ -16,7 +16,7 @@ public interface ArticleRepository extends JpaRepository<Article,Integer> {
 
     Optional<Article> getArticleByName(String name);
 
-    @Query("SELECT a FROM Article a WHERE a.category.category_id = :categoryId")
+    @Query("SELECT a FROM Article a WHERE a.category.categoryId = :categoryId")
     List<Article> findByCategoryId(@Param("categoryId") Integer categoryId);
 
     @Query("SELECT a FROM Article a " +

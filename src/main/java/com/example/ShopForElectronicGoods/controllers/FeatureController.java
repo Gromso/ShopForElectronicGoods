@@ -34,6 +34,12 @@ public class FeatureController {
         }
     }
 
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<List<Feature>> getFeaturesByCategoryId(@PathVariable Integer categoryId){
+        List<Feature> features = featureService.getFeatureByCategoryId(categoryId);
+        return ResponseEntity.ok(features);
+    }
+
     @GetMapping("/features")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Feature>> getAllFeature(){

@@ -1,6 +1,8 @@
 package com.example.ShopForElectronicGoods.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -19,18 +21,20 @@ public class Feature {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "feature_id", nullable = false)
-    private Integer feature_id;
+    private Integer featureId;
 
     @Column(name = "name", nullable = false)
     @NotBlank
     @Size(min = 2, max = 128)
     private String name;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "category_id", nullable = false)
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "categoryId",referencedColumnName = "category_id", nullable = false)
    // @JsonIgnore
     private Category category;
 
-    @OneToMany(mappedBy = "feature")
+    @JsonManagedReference
+    @OneToMany(mappedBy = "feature",cascade = CascadeType.ALL , fetch = FetchType.LAZY)
     private Set<ArticleFeature> articleFeatureSet;
 }

@@ -1,6 +1,7 @@
 package com.example.ShopForElectronicGoods.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -25,7 +26,7 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "category_id")
-    private Integer category_id;
+    private Integer categoryId;
 
     @Column(name = "name", nullable = false)
     @NotBlank
@@ -40,8 +41,8 @@ public class Category {
     @JsonIgnore
     private Set<Article> articles;
 
-    @OneToMany(mappedBy = "category")
-    @JsonIgnore
+    @JsonManagedReference
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL , fetch = FetchType.LAZY)
     private Set<Feature> features;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -55,7 +56,7 @@ public class Category {
 
     public Integer getParentCategoryId() {
         if (parent_category != null) {
-            return parent_category.getCategory_id();
+            return parent_category.getCategoryId();
         }
         return null;
     }

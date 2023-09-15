@@ -25,6 +25,11 @@ public class FeatureService {
         return featureRepository.findById(featureId).orElse(null);
     }
 
+    public List<Feature> getFeatureByCategoryId(Integer categoryId) {
+        List<Feature> features = featureRepository.findByCategoryCategoryId(categoryId);
+        return features;
+    }
+
     public List<Feature> getAllFeatures() {
         return featureRepository.findAll();
     }
