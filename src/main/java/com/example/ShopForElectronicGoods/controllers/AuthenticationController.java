@@ -48,10 +48,13 @@ public class AuthenticationController {
     }
 
     @PostMapping("/user/refresh")
-    public ResponseEntity<RefreshTokenResponseDTO> userTokenRefresh(@RequestBody UserRefreshTokenDTO body, @AuthenticationPrincipal Jwt principal) throws Exception {
+    public ResponseEntity<RefreshTokenResponseDTO> userTokenRefresh(@RequestBody UserRefreshTokenDTO body) throws Exception {
         try {
+            //System.out.println( body.getToken());
             UserToken userRefreshToken = tokenService.getTokenByName(body.getToken());
+            //System.out.println(userRefreshToken.getToken());
             RefreshTokenResponseDTO responseDTO = tokenService.responseRefreshToken(userRefreshToken.getToken());
+            System.out.println(responseDTO.getRefreshToken() + " wwwwwwwwwwwww");
             return new ResponseEntity<>(responseDTO, HttpStatus.OK);
         }catch (NullPointerException e){
             throw new ApiRequestException(e.getMessage(), HttpStatus.UNAUTHORIZED);

@@ -9,6 +9,8 @@ import com.example.ShopForElectronicGoods.modelsDTO.ArticleDTO.ArticleSearchDTO;
 import com.example.ShopForElectronicGoods.services.ArticleServices.ArticleResponseService;
 import com.example.ShopForElectronicGoods.services.ArticleServices.ArticleService;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,7 @@ import java.util.List;
 @RequestMapping("/api/article")
 public class ArticleController {
 
+    Logger logger =  LoggerFactory.getLogger(ArticleController.class);
 
     @Autowired
     private ArticleService articleService;
@@ -29,8 +32,8 @@ public class ArticleController {
     private ArticleResponseService articleResponseService;
 
     @GetMapping("/{articleId}")
-    public ResponseEntity<Article> getArticleById(@PathVariable Integer articleId){
-        Article article = articleService.findArticleById(articleId);
+    public ResponseEntity<ArticleDTO> getArticleById(@PathVariable Integer articleId){
+        ArticleDTO article = articleResponseService.getFullArticleByArticleId(articleId);
         if(article != null){
             return ResponseEntity.ok(article);
         }
@@ -40,6 +43,7 @@ public class ArticleController {
     @GetMapping("/articles")
     public ResponseEntity<List<ArticleDTO>> getAllArticle(){
         List<ArticleDTO> allArticle = articleService.getFullArticles();
+        logger.info("Method gelAllArticle is successfully finished");
         return ResponseEntity.ok(allArticle);
     }
 

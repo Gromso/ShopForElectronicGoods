@@ -1,7 +1,6 @@
 package com.example.ShopForElectronicGoods.models;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -18,8 +17,9 @@ public class Photo {
     @Column(name = "photo_id", nullable = false)
     private Integer photo_id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "article_id", nullable = false)
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "article_id", referencedColumnName = "article_id",nullable = false)
     private Article article;
 
     @Column(name = "image_path", nullable= false)

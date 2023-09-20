@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/photo")
@@ -19,6 +20,13 @@ public class PhotoController {
     @Autowired
     private PhotoService photoService;
 
+
+    //@PreAuthorize("hasRole('USER')")
+    @GetMapping("/photos/{articleId}")
+    public ResponseEntity<List<Photo>> getPhotosByArticleId(@PathVariable Integer articleId){
+        List<Photo> photos = photoService.getPhotosByArticleId(articleId);
+        return ResponseEntity.ok(photos);
+    }
 
     @PostMapping("/article/{articleId}")
     @PreAuthorize("hasRole('ADMIN')")

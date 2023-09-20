@@ -29,7 +29,8 @@ public class Article {
     @OneToMany(mappedBy = "article")
     private Set<ArticleFeature> articleFeatureSet;
 
-    @OneToMany(mappedBy = "article")
+    @JsonManagedReference
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private Set<Photo> photos;
 
     @JsonManagedReference

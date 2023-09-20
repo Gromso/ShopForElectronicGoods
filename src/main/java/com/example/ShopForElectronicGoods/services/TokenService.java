@@ -135,10 +135,9 @@ public class TokenService {
     }
 
     public UserToken getTokenByName(String token){
-
-        UserToken u = userTokenRepository.findByToken(token);
-        inValidDateToken(u.getToken());
-        return u;
+        UserToken user = userTokenRepository.findByToken(token);
+        inValidDateToken(user.getToken());
+        return user;
     }
 
     public UserToken inValidDateToken(String token){
@@ -148,14 +147,15 @@ public class TokenService {
         UserToken userToken = userTokenRepository.findByToken(token);
 
         if(userToken == null ){
+            userToken.setIs_valid((byte) 0);
             throw new ApiRequestException("user Token not found", HttpStatus.NOT_FOUND);
         }
         ApplicationUser user = userToken.getUser();
 
         if(user == null){
             throw new ApiRequestException("user not found", HttpStatus.NOT_FOUND);
+
         }
-        userToken.setIs_valid((byte) 0);
         return userTokenRepository.save(userToken);
     }
 

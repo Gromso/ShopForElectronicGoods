@@ -33,6 +33,13 @@ public class PhotoService {
     private ArticleRepository articleRepository;
 
 
+
+    public List<Photo> getPhotosByArticleId(Integer articleId) {
+        List<Photo> photos = photoRepository.findPhotosByArticleId(articleId);
+        return photos;
+    }
+
+
    public Photo savePhotoForArticle(MultipartFile file, Integer articleId) throws IOException {
        if (file.isEmpty()) {
            throw new ApiRequestException("File is Empty");

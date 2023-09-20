@@ -82,7 +82,7 @@ public class CartService {
                 "LEFT JOIN user u ON c.user.userId = u.userId " +
                 "LEFT JOIN cartArticle ca ON c.cart_id = ca.cart.cart_id " +
                 "LEFT JOIN article a ON ca.article.article_id = a.article_id " +
-                "LEFT JOIN category cat ON a.category.category_id = cat.category_id " +
+                "LEFT JOIN category cat ON a.category.categoryId = cat.categoryId " +
                 "WHERE c.cart_id = :cartId";
 
         TypedQuery<Cart> query = entityManager.createQuery(sql, Cart.class);
