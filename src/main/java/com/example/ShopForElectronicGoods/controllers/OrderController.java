@@ -27,6 +27,13 @@ public class OrderController {
         return ResponseEntity.ok(orderById);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/admin/orders")
+    public ResponseEntity<List<Orders>> getOrders(){
+        List<Orders> orders = orderService.getOrderList();
+        return  ResponseEntity.ok(orders);
+    }
+
     @GetMapping("/orders")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<Orders>> getAllOrders(@AuthenticationPrincipal Jwt principal){
@@ -35,6 +42,9 @@ public class OrderController {
         return ResponseEntity.ok(listOrders);
     }
 
+
+
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/editOrder/{orderId}")
     public ResponseEntity<Orders> editOrder(@Valid @RequestBody Orders order,
                                            @PathVariable final Integer orderId){
@@ -42,6 +52,7 @@ public class OrderController {
         return ResponseEntity.ok(order2);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{orderId}")
     public void deleteOrder(@PathVariable final Integer orderId){
        orderService.deleteOrderById(orderId);
